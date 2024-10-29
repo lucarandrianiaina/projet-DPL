@@ -1,0 +1,13 @@
+A:ajout
+V: voir
+M:modifier
+S:supprimer
+X:pas accés
+
+A-V-M-S : tous les permission
+
+X-V-M-S : voir, modifier, supprimer
+
+compte utilisateur par defaut:
+	user: nom_personnel
+	pasword: 1234

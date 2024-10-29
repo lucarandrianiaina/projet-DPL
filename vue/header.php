@@ -88,6 +88,11 @@ include_once '../model/fonction.php';
             <!-- Divider -->
             <hr class="sidebar-divider">
 
+            <li class="nav-item active">
+                <a class="nav-link" href="utilisateur.php">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Gérer les utilisateur</span></a>
+            </li>
 
             <!-- Heading -->
             <!-- <div class="sidebar-heading">
