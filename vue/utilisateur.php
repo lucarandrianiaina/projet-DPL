@@ -35,7 +35,18 @@ include_once 'header.php'
       </div>
       <div class="col-sm-12 col-lg-8 border ">
             <!-- tableau de données -->
-            
+            <table class="table">
+                  <thead>
+                        <tr>
+                              <th scope="col">nom</th>
+                              <th scope="col">type de compte</th>
+                              <th scope="col">action</th>
+                        </tr>
+                  </thead>
+                  <tbody>
+
+                  </tbody>
+            </tabble>
       </div>
 </div>
 

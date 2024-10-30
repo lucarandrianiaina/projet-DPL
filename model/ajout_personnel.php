@@ -1,7 +1,7 @@
 <?php
 include 'fonction.php';
 $nom = $_POST['nom_p'];
-$mdp_default = '1234';
+$mdp_default = password_hash('1234', PASSWORD_DEFAULT);
 $get_id = get_last_login();
 $id_l = $get_id['id_l']+1;
 if(isset($_POST['ajout'])){
