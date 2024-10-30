@@ -97,3 +97,13 @@ function recherche_deux_date($date_d, $date_f){
   
           return $req->fetchAll();
 }
+
+function get_last_login(){
+    $sql = "SELECT id_l FROM login ORDER BY id_l DESC LIMIT 1";
+
+        $req = $GLOBALS['connexion']->prepare($sql);
+
+        $req->execute();
+
+        return $req->fetch(PDO::FETCH_ASSOC);
+}
