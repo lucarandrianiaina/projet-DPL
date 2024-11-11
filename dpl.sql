@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 30 oct. 2024 à 11:38
+-- Généré le : mar. 05 nov. 2024 à 08:23
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -44,17 +44,18 @@ CREATE TABLE `activite` (
 CREATE TABLE `login` (
   `id_l` int(11) NOT NULL,
   `nom_utilisateur` varchar(50) NOT NULL,
-  `mdp` varchar(50) NOT NULL
+  `password` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `login`
 --
 
-INSERT INTO `login` (`id_l`, `nom_utilisateur`, `mdp`) VALUES
-(1, 'admin', 'admin'),
-(2, 'personnel_1', '1234'),
-(3, 'personnel_2', '1234');
+INSERT INTO `login` (`id_l`, `nom_utilisateur`, `password`) VALUES
+(4, 'personnel_3', '$2y$10$Ljsxgegiul06EHMVo1LXwuGFGa4CdHdRds8fyRPdMtq'),
+(5, 'personnel_8', '$2y$10$oxyGItNBQu9hE70sTNPNHOs9xfTXstkgZucPEGZtQNM'),
+(6, 'personnel', '$2y$10$tBfRPfaPYlqKOeibHdr7huR07pW3updcGG7ZMkT2MqZ'),
+(7, 'qwerty', '$2y$10$RLJ6EtwT7whN6qjroY2cseMQhnZuLtURr0cQ2Wlx5o7');
 
 -- --------------------------------------------------------
 
@@ -94,9 +95,10 @@ CREATE TABLE `personnel` (
 --
 
 INSERT INTO `personnel` (`id_p`, `nom_p`, `id_login`) VALUES
-(8, 'admin', 1),
-(11, 'personnel_1', 2),
-(12, 'personnel_2', 3);
+(13, 'personnel_3', 4),
+(14, 'personnel_8', 5),
+(15, 'personnel', 6),
+(16, 'qwerty', 7);
 
 -- --------------------------------------------------------
 
@@ -153,13 +155,6 @@ CREATE TABLE `role_utilisateur` (
   `id_utilisateur` int(11) NOT NULL,
   `id_role` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Déchargement des données de la table `role_utilisateur`
---
-
-INSERT INTO `role_utilisateur` (`id_utilisateur`, `id_role`) VALUES
-(1, 1);
 
 --
 -- Index pour les tables déchargées
@@ -220,13 +215,13 @@ ALTER TABLE `role_utilisateur`
 -- AUTO_INCREMENT pour la table `activite`
 --
 ALTER TABLE `activite`
-  MODIFY `id_a` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_a` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT pour la table `login`
 --
 ALTER TABLE `login`
-  MODIFY `id_l` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_l` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT pour la table `permission`
@@ -238,7 +233,7 @@ ALTER TABLE `permission`
 -- AUTO_INCREMENT pour la table `personnel`
 --
 ALTER TABLE `personnel`
-  MODIFY `id_p` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_p` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT pour la table `role`

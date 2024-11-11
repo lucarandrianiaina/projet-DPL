@@ -1,22 +1,24 @@
 <?php
 include 'fonction.php';
 $nom = $_POST['nom_p'];
-$mdp_default = password_hash('1234', PASSWORD_DEFAULT);
-$get_id = get_last_login();
-$id_l = $get_id['id_l']+1;
+// $patern = '1234';
+// $password = password_hash($patern, PASSWORD_DEFAULT);
+// $get_id = get_last_login();
+// $id_l = $get_id['id_l']+1;
 if(isset($_POST['ajout'])){
       if ($_SERVER["REQUEST_METHOD"] == "POST"){
             if(!empty($nom)){
-                  // creer un compte pour l'utilisateur enregistrer
-                  $sql_1 = "INSERT INTO login(nom_utilisateur,mdp)VALUES(?, ?)";
-                  $req_1 = $connexion->prepare($sql_1);
+                  // // creer un compte pour le personnel enregistrer avec une compte par defaut
+                  // $sql_1 = "INSERT INTO login(nom_utilisateur,password)VALUES(?, ?)";
+                  // $req_1 = $connexion->prepare($sql_1);
     
-                  $req_1->execute(array($nom, $mdp_default));
-
-                  $sql = "INSERT INTO personnel(nom_p, id_login)VALUES(?, ?)";
+                  // $req_1->execute(array($nom, $password));
+                  
+                  // creer le personnel
+                  $sql = "INSERT INTO personnel(nom_p)VALUES(?)";
                   $req = $connexion->prepare($sql);
     
-                  $req->execute(array($nom, $id_l));
+                  $req->execute(array($nom));
 
                   if ( $req->rowCount()!=0) {
                         $_SESSION['message']['text'] = "ajout avec succès";

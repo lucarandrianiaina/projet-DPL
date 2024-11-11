@@ -1,5 +1,7 @@
 <?php
-include_once 'header.php'
+include_once 'header.php';
+
+$permission=has_permission($_SESSION['utilisateur'], 'delete_post');
 ?>
 
 <div class="row">
@@ -12,7 +14,9 @@ include_once 'header.php'
                                                       Earnings (Monthly)
                                     </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                $40,000
+                                               <?php
+                                               var_dump($permission);
+                                               ?>
                                     </div>
                               </div>
                               <div class="col-auto">

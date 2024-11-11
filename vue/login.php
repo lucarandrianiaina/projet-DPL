@@ -1,39 +1,103 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
     <title>Login</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template-->
+    <link href="../public/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="../public/css/sb-admin-2.min.css" rel="stylesheet">
+
 </head>
-<body class="d-flex align-items-center" style="height: 100vh; background-color: #f8f9fa;">
+
+<body class="bg-gradient-primary">
+
     <div class="container">
+
+        <!-- Outer Row -->
         <div class="row justify-content-center">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header text-center">
-                        <h4>Connexion</h4>
-                    </div>
-                    <div class="card-body">
-                        <form>
-                            <div class="form-group">
-                                <label for="email">Adresse e-mail</label>
-                                <input type="email" class="form-control" id="email" placeholder="Entrez votre e-mail" required>
+
+            <div class="col-xl-10 col-lg-12 col-md-9">
+
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">Se connécter</h1>
+                                    </div>
+                                    <form class="user" action="../model/login.php" method="post">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user"
+                                                name="nom_u"
+                                                placeholder="Entrer votre nom d'utilisateur">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-user"
+                                                name="mdp" placeholder="Entrer votre mot de passe">
+                                        </div>
+
+                                        <!-- <div class="form-group">
+                                            <div class="custom-control custom-checkbox small">
+                                                <input type="checkbox" class="custom-control-input" id="customCheck">
+                                                <label class="custom-control-label" for="customCheck">Remember
+                                                    Me</label>
+                                            </div>
+                                        </div> -->
+                                        <?php if (!empty($_SESSION['message']['text'])):?>
+                                                <div class="alert alert-<?= $_SESSION['message']['type'] ?>">
+                                                        <?= $_SESSION['message']['text'] ?>
+                                                        <?php
+                                                            unset($_SESSION['message']);
+                                                        ?>
+                                                    </div>
+                                        <?php endif; ?>
+                                        <input type="submit" value="connexion" class="btn btn-primary btn-user btn-block" name="connexion">
+                                    </form>
+                                    <hr>
+                                    <div class="text-center">
+                                        <a class="small" href="forgot-password.html">Mot de passe oublié?</a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="password">Mot de passe</label>
-                                <input type="password" class="form-control" id="password" placeholder="Entrez votre mot de passe" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
-                        </form>
+                        </div>
                     </div>
                 </div>
+
             </div>
+
         </div>
+
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../public/vendor/jquery/jquery.min.js"></script>
+    <script src="../public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="../public/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
 </body>
+
 </html>

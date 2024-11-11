@@ -107,3 +107,52 @@ function get_last_login(){
 
         return $req->fetch(PDO::FETCH_ASSOC);
 }
+
+function get_login_connexion($nom_u){
+    $sql = "SELECT * FROM login WHERE nom_utilisateur = ?";
+
+    $req = $GLOBALS['connexion']->prepare($sql);
+
+    $req->execute(array($nom_u));
+
+    return $req->fetch(PDO::FETCH_ASSOC);
+}
+
+
+
+// Fonction pour récupérer les permissions d'un utilisateur
+function get_user_permissions($user_id) {
+    $sql = "SELECT permission.nom_p
+        FROM permission
+        JOIN role_permission ON permission.id_p = role_permission.permission_id
+        JOIN role_utilisateur ON role_permission.role_id = role_utilisateur.id_role
+        WHERE role_utilisateur.id_utilisateur = ?";
+
+    $req = $GLOBALS['connexion']->prepare($sql);
+
+    $req->execute(array($user_id));
+
+    return $req->fetchAll(PDO::FETCH_COLUMN);
+
+}
+
+
+// Fonction pour vérifier si l'utilisateur a une permission spécifique
+function has_permission($user_id, $permission) {
+    $permissions = get_user_permissions($user_id);
+    return in_array($permission, $permissions);
+}
+
+
+function get_utilisateur($id=null){
+    if (!empty($id)) {
+          $sql = "SELECT nom_utilisateur FROM login WHERE id_l = ?";
+  
+          $req = $GLOBALS['connexion']->prepare($sql);
+  
+          $req->execute(array($id));
+  
+          return $req->fetch(PDO::FETCH_ASSOC);
+      }
+}
+
