@@ -1,5 +1,14 @@
 <?php
 include_once 'header.php';
+
+if(has_permission($_SESSION['utilisateur'], 'create_post') && has_permission($_SESSION['utilisateur'], 'edit_post') && has_permission($_SESSION['utilisateur'], 'delete_post') && has_permission($_SESSION['utilisateur'], 'view_post')){
+      $personnel = get_personnel();
+}else{
+      $info_personnel = get_personnel($_SESSION['utilisateur']);
+      $personnel = get_personnel_on_service($info_personnel['service']);
+}
+$service = get_service();
+
 ?>
 
 <div class="row">
@@ -8,7 +17,21 @@ include_once 'header.php';
             <form action="../model/ajout_personnel.php" class="form-groupe" method="post">
                   <label for="nom" class="form-label">Nom</label>
                   <input type="text" id="nom" name="nom_p" class="form-control" placeholder="Entrer le nom">
-                  <input type="submit" class="btn btn-primary w-100 my-3" value="Enregistrer" name="ajout">
+                  <label for="service" class="form-label">service</label>
+                  <select name="service" id="service" class="form-control">
+                        <?php
+                              if (!empty($service) && is_array($service)):
+                                    foreach ($service as $key => $value):
+                        ?>
+                        <option value="<?= $value['id_s']?>">
+                              <?= $value['nom_s']?>
+                        </option>
+                        <?php
+                                    endforeach;
+                              endif;
+                        ?>
+                  </select>
+                  <input type="submit" class="btn btn-primary w-100 my-3 <?= has_permission($_SESSION['utilisateur'], 'create_post')== false ? 'disabled' : ''?>" value="Enregistrer" name="ajout">
             </form>
             <?php if (!empty($_SESSION['message']['text'])):?>
             <div>
@@ -32,7 +55,6 @@ include_once 'header.php';
                   </thead>
                   <tbody>
                         <?php
-                              $personnel = get_personnel();
                               if (!empty($personnel) && is_array($personnel)):
                                     foreach ($personnel as $key => $value):
                         ?>

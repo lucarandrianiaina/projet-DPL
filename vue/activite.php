@@ -1,5 +1,6 @@
 <?php
-include_once 'header.php'
+include_once 'header.php';
+$activite = get_activite();
 ?>
 
 <div class="d-flex align-items-center w-45 my-3 ">
@@ -7,10 +8,6 @@ include_once 'header.php'
             <!-- boutton ajout -->
             <i class="fas fa-plus-circle"></i>
       </button>
-      <!-- bouton pour voir tous les activité -->
-      <a href="tous_activite.php" class="btn btn-secondary mx-2">
-            <i class="fas fa-eye"></i>
-      </a>
       <!-- Modal enregistrement nouvel tache -->
       <div class="modal" id="myModal">
             <div class="modal-dialog">
@@ -66,178 +63,125 @@ include_once 'header.php'
       </div>
 <?php endif; ?>
 
-<!-- les trois tabeau de tache -->
-<a href="activite.php?act=AF" class="btn btn-outline-primary <?= $_GET['act']=='AF' ? 'active' : ''?>"><i class="fas fa-hourglass-half"></i> A faire</a>
-<a href="activite.php?act=EC" class="btn btn-outline-primary <?=  $_GET['act']=='EC' ? 'active' : ''?>"><i class="fas fa-clock"></i> En cours</a>
-<a href="activite.php?act=FN" class="btn btn-outline-primary <?=$_GET['act']=='FN' ? 'active' : ''?>"><i class="fas fa-arrow-right"></i> Finis</a>
-<?php
-if($_GET['act']=='AF'):
-?>
-<!-- pour le tache a venir -->
-<div class="row my-2">
-            <?php
-                  $a_faire = get_tache_a_faire();
-                  if (!empty($a_faire) && is_array($a_faire)):
-                        foreach ($a_faire as $key => $value):
-            ?>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-            <div class="card shadow-lg" style="width: 18rem;">
-                  <div class="card-body">
-                        <?php
-                              $date_d = new DateTime($value['date_d']);
-                              $date_sys = new DateTime(date('Y-m-d'));
+<form class="row" method="post">
+    <!-- Champ de recherche 1 -->
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="description">Description de l'activité</label>
+            <input type="text" class="form-control" id="description" name="description" placeholder="Entrez une description">
+        </div>
+    </div>
 
-                              $reste = $date_sys->diff($date_d);
-                              ?>
-                        <span class="small float-right">
-                              <span class="badge badge-secondary">
-                                    <?='j-'.$reste->days?>
-                              </span>
-                        </span>
-                        <h5 class="card-title"><?=$value['description']?></h5>
-                        <p class="card-text"> du <?=$value['date_d']?> á <?=$value['date_f']?></p>
-                        <span class="float-right">
-                              <a class="nav-link dropdown-toggle btn btn-outline-primary" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-info-circle"></i>
-                              </a>
-                              <!-- Dropdown - INFO ACTIVITE--> 
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    INFO SUR L'ACTIVITE
-                                </h6><hr>
-                                <p>Nom de l'activité: <strong><?=$value['description']?></strong></p>
-                                <p>Nom de responsable: <strong><?=$value['nom_p']?></strong></p>
-                                <p>Commence le: <?=$value['date_d']?></p>
-                                <p>Se termine le: <?=$value['date_f']?></p>
-                                Il reste <strong><?=$reste->days==1 ? $reste->days.' jour' : $reste->days.' jours'?> </strong> avant l'éxécution
+    <!-- Champ de recherche 2 -->
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="date_d">Date début</label>
+            <input type="date" class="form-control" id="date_d" name="date_d">
+        </div>
+    </div>
 
-                            </div>
-                        </span>
-                  </div>
-            </div>
-      </div>
-            <?php
-                         endforeach;
-                  endif;
-            ?>
-</div>
+    <!-- Champ de recherche 3 -->
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label for="date_f">Date fin</label>
+            <input type="date" class="form-control" id="date_f" name="date_f">
+        </div>
+    </div>
 
-<?php
-elseif($_GET['act']=='EC' ):
-?>
-<!-- pour les tache en cour -->
-<div class="row my-2">
-      <?php
-            $en_cours = get_tache_en_cours();
-            if (!empty($en_cours) && is_array($en_cours)):
-                  foreach ($en_cours as $key => $value):
-      ?>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-            <div class="card shadow-lg" style="width: 18rem;">
-                  <div class="card-body">
-                        <?php
-                              $date_f = new DateTime($value['date_f']);
-                              $date_sys = new DateTime(date('Y-m-d'));
+    <!-- Bouton de recherche -->
+    <div class="col-xs-12 col-sm-3">
+        <div class="form-group">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-outline-primary btn-block" name="search"><i class="fas fa-search"></i> Rechercher</button>
+        </div>
+    </div>
+</form>
 
-                              $reste = $date_sys->diff($date_f);
-                        ?>
-                        <span class="small float-right">
-                              <span class="badge badge-<?= $reste->days == 0 ? 'danger' : 'info'?>">
-                                    <!-- jours restant -->
-                                    <?php if($reste->days == 0): ?>
-                                          <?='dérnier jour'?>
-                                    <?php else: ?>
-                                          <?='-'.$reste->days.' j'?>
-                                    <?php endif ?>
-                              </span>
-                        </span>
-                        <h5 class="card-title"><?=$value['description']?></h5>
-                        <p class="card-text"> du <?=$value['date_d']?> á <?=$value['date_f']?></p>
-                        <span class="float-right">
-                              <a class="nav-link dropdown-toggle btn btn-outline-primary" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-info-circle"></i>
-                              </a>
-                              <!-- Dropdown - INFO ACTIVITE--> 
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    INFO SUR L'ACTIVITE
-                                </h6><hr>
-                                <p>Nom de l'activité: <strong><?=$value['description']?></strong></p>
-                                <p>Nom de responsable: <strong><?=$value['nom_p']?></strong></p>
-                                <p>Commence le: <?=$value['date_d']?></p>
-                                <p>Se termine le: <?=$value['date_f']?></p>
-                                <?=$reste->days==0 ?'dernier jour' : ($reste->days==1 ?'il reste '.$reste->days.' jour' : 'il reste '.$reste->days.' jour')?>
+<table class="table table-hover">
+    <thead>
+      <tr>
+            <th>Description</th>
+            <th>Responsable</th>
+            <th>Date Début</th>
+            <th>Date Fin</th>
+            <th>Action</th>
+      </tr>
+    </thead>
 
-                            </div>
-                        </span>
-                  </div>
-            </div>
-      </div>
-            <?php
-                         endforeach;
-                  endif;
-            ?>
-</div>
-<?php
-else:
-?>
-<!-- pour lews tache passé -->
-<div class="row my-2">
-            <?php
-                  $fini = get_tache_fini();
-                  if (!empty($fini) && is_array($fini)):
-                        foreach ($fini as $key => $value):
-            ?>
-      <div class="col-sm-12 col-md-6 col-lg-4">
-            <div class="card shadow-lg" style="width: 18rem;">
-                  <div class="card-body">
-                        <?php
-                              $date_f = new DateTime($value['date_f']);
-                              $date_sys = new DateTime(date('Y-m-d'));
+    <?php
+    // Afficher toutes les activités si aucun critère de recherche n'a été soumis
+    if (!isset($_POST['search'])):
+        if (!empty($activite) && is_array($activite)):
+            foreach ($activite as $value):
+    ?>
+        <tbody>
+          <tr>
+                <td><?= $value['description'] ?></td>
+                <td><?= $value['nom_p'] ?></td>
+                <td><?= $value['date_d'] ?></td>
+                <td><?= $value['date_f'] ?></td>
+                <td>
+                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-success"><i class="fas fa-pen"></i></a>
+                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-danger"><i class="fas fa-trash"></i></a>
+                </td>
+          </tr>
+        </tbody>
+    <?php
+            endforeach;
+        else:
+            echo "<tr><td colspan='5' class='text-center'>Aucune activité trouvée.</td></tr>";
+        endif;
 
-                              $reste = $date_sys->diff($date_f);
-                        ?>
-                        <span class="small float-right">
-                              <span class="badge badge-<?= $reste->days == 1 ? 'danger' :'secondary'?>">
-                                    <?= $reste->days == 1 ? 'hier' :'il y a '.$reste->days.'j'?>
-                              </span>
-                        </span>
-                        <h5 class="card-title"><?=$value['description']?></h5>
-                        <p class="card-text"> du <?=$value['date_d']?> á <?=$value['date_f']?></p>
-                        <span class="float-right">
-                              <a class="nav-link dropdown-toggle btn btn-outline-primary" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-info-circle"></i>
-                              </a>
-                              <!-- Dropdown - INFO ACTIVITE--> 
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    INFO SUR L'ACTIVITE
-                                </h6><hr>
-                                <p>Nom de l'activité: <strong><?=$value['description']?></strong></p>
-                                <p>Nom de responsable: <strong><?=$value['nom_p']?></strong></p>
-                                <p>Commence le: <?=$value['date_d']?></p>
-                                <p>Se termine le: <?=$value['date_f']?></p>
-                                <i class="fas fa-hand-point-right"></i> fait
+    // Cas : Recherche par description uniquement
+    elseif (!empty($_POST['description']) && empty($_POST['date_d']) && empty($_POST['date_f'])):
+        $search = recherche_activite($_POST['description']);
+        if (!empty($search) && is_array($search)):
+            foreach ($search as $value):
+    ?>
+        <tbody>
+          <tr>
+                <td><?= $value['description'] ?></td>
+                <td><?= $value['nom_p'] ?></td>
+                <td><?= $value['date_d'] ?></td>
+                <td><?= $value['date_f'] ?></td>
+                <td>
+                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-success"><i class="fas fa-pen"></i></a>
+                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-danger"><i class="fas fa-trash"></i></a>
+                </td>
+          </tr>
+        </tbody>
+    <?php
+            endforeach;
+        else:
+            echo "<tr><td colspan='5' class='text-center'>Aucun résultat pour cette description.</td></tr>";
+        endif;
 
-                            </div>
-                        </span>
-                  </div>
-            </div>
-      </div>
-            <?php
-                         endforeach;
-                  endif;
-            ?>
-</div>
-<?php
-endif;
-?>
+    // Cas : Recherche entre deux dates
+    elseif (empty($_POST['description']) && !empty($_POST['date_d']) && !empty($_POST['date_f'])):
+        $search = recherche_deux_date($_POST['date_d'], $_POST['date_f']);
+        if (!empty($search) && is_array($search)):
+            foreach ($search as $value):
+    ?>
+        <tbody>
+          <tr>
+                <td><?= $value['description'] ?></td>
+                <td><?= $value['nom_p'] ?></td>
+                <td><?= $value['date_d'] ?></td>
+                <td><?= $value['date_f'] ?></td>
+                <td>
+                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-success"><i class="fas fa-pen"></i></a>
+                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-danger"><i class="fas fa-trash"></i></a>
+                </td>
+          </tr>
+        </tbody>
+    <?php
+            endforeach;
+        else:
+            echo "<tr><td colspan='5' class='text-center'>Aucun résultat pour cette plage de dates.</td></tr>";
+        endif;
+    endif;
+    ?>
+</table>
 
       
 <?php

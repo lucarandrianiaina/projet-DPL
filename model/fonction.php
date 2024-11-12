@@ -4,6 +4,28 @@ include_once 'connexion.php';
 function get_personnel($id = null)
 {
     if (!empty($id)) {
+        $sql = "SELECT * FROM personnel WHERE id_p=?";
+
+        $req = $GLOBALS['connexion']->prepare($sql);
+
+        $req->execute(array($id));
+
+        return $req->fetch(PDO::FETCH_ASSOC);
+    } else {
+        $sql = "SELECT * FROM personnel";
+
+        $req = $GLOBALS['connexion']->prepare($sql);
+
+        $req->execute();
+
+        return $req->fetchAll();
+    }
+}
+
+
+function get_service($id = null)
+{
+    if (!empty($id)) {
       //   $sql = "SELECT * FROM personnel WHERE id_p=?";
 
       //   $req = $GLOBALS['connexion']->prepare($sql);
@@ -12,7 +34,7 @@ function get_personnel($id = null)
 
       //   return $req->fetch();
     } else {
-        $sql = "SELECT * FROM personnel";
+        $sql = "SELECT * FROM service";
 
         $req = $GLOBALS['connexion']->prepare($sql);
 
@@ -156,3 +178,41 @@ function get_utilisateur($id=null){
       }
 }
 
+// Fonction pour générer un login unique
+function genererLoginParDefaut($nom) {
+    global $connexion;
+    $login = strtolower($nom);
+    $loginUnique = $login;
+    $i = 1;
+
+    // Vérifier si le login est unique
+    while (!verifierLoginUnique($loginUnique)) {
+        $loginUnique = $login . $i;
+        $i++;
+    }
+
+    return $loginUnique;
+}
+
+function verifierLoginUnique($login) {
+    global $connexion;
+    $sql = "SELECT COUNT(*) FROM login WHERE nom_utilisateur = ?";
+    $stmt = $connexion->prepare($sql);
+    $stmt->execute([$login]);
+    return $stmt->fetchColumn() == 0;
+}
+function genererMotDePasse() {
+      $password = password_hash('default123',PASSWORD_DEFAULT);
+      return $password; // Mot de passe fixe pour tous les nouveaux utilisateurs
+  }
+  
+
+  function get_personnel_on_service($id_sevice){
+    $sql = "SELECT * FROM personnel WHERE service = ?";
+
+        $req = $GLOBALS['connexion']->prepare($sql);
+
+        $req->execute(array($id_sevice));
+
+        return $req->fetchAll();
+  }
