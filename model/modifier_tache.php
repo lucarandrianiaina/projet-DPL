@@ -1,30 +1,31 @@
 <?php
 include_once 'fonction.php';
-// extracton des donnees
+
+// extraction des donnees
+$id = $_POST['id_a'];
 $date_d = $_POST['date_d'];
 $date_f = $_POST['date_f'];
 $id_resp = $_POST['id_resp'];
 $description = $_POST['description'];
-
-// var_dump($_POST);
-if(has_permission($_SESSION['utilisateur'], 'create_post')){
+// verification de permission
+if(has_permission($_SESSION['utilisateur'], 'edit_post')){
       if(isset($_POST['ajout'])){
             if ($_SERVER["REQUEST_METHOD"] == "POST"){
-                  if(!empty($date_d) && !empty($date_f) && !empty($id_resp) && !empty($description)){
-                        if(strtotime($date_d)<strtotime(date('Y-m-d')) || strtotime($date_f)<strtotime(date('Y-m-d')) || strtotime($date_f)<strtotime($date_d)){
+                  if(!empty($date_d) && !empty($date_f) && !empty($description)){
+                        if( strtotime($date_f)<strtotime(date('Y-m-d')) || strtotime($date_f)<strtotime($date_d)){
                               $_SESSION['message']['text'] = "veuiller bien verifier le date";
                               $_SESSION['message']['type'] = "danger";
                         }else{
                               
-                              $sql = "INSERT INTO activite(description,id_resp,date_d,date_f) VALUES(?, ?, ?, ?)";
+                              $sql = "UPDATE activite SET description =  ?, date_d = ?, date_f = ? WHERE id_a = ?";
                               $req = $connexion->prepare($sql);
                         
-                              $req->execute(array($description, $id_resp, $date_d, $date_f));   
+                              $req->execute(array($description, $date_d, $date_f, $id));   
                               if ( $req->rowCount()!=0) {
-                                    $_SESSION['message']['text'] = "ce tache est enregitré";
+                                    $_SESSION['message']['text'] = "ce tache est modifié";
                                     $_SESSION['message']['type'] = "success";
                                 }else {
-                                    $_SESSION['message']['text'] = "Une erreur s'est produite lors de l'enregistrement";
+                                    $_SESSION['message']['text'] = "Une erreur s'est produite lors de la modification";
                                     $_SESSION['message']['type'] = "danger";
                                 }
                         }
@@ -37,6 +38,6 @@ if(has_permission($_SESSION['utilisateur'], 'create_post')){
 }else{
       $_SESSION['message']['text'] = "Vous n'avais pas se permissions";
       $_SESSION['message']['type'] = "danger";
-  }
+}
 
-header("Location: ../vue/activite.php?act=EC");
+header("Location: ../vue/activite.php");

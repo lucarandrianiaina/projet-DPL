@@ -4,10 +4,13 @@ $activite = get_activite();
 ?>
 
 <div class="d-flex align-items-center w-45 my-3 ">
+    <!-- boutton ajout -->
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-            <!-- boutton ajout -->
             <i class="fas fa-plus-circle"></i>
       </button>
+      <a href="imprime_activite.php" class="btn btn-secondary mx-2">
+            <i class="fas fa-print"></i> 
+        </a>
       <!-- Modal enregistrement nouvel tache -->
       <div class="modal" id="myModal">
             <div class="modal-dialog">
@@ -113,6 +116,9 @@ $activite = get_activite();
     if (!isset($_POST['search'])):
         if (!empty($activite) && is_array($activite)):
             foreach ($activite as $value):
+                $modalId = "editModal_" . $value['id_a'];
+                $supprId = "supprModal_" . $value['id_a'];
+                $printId = "printModal_" . $value['id_a'];
     ?>
         <tbody>
           <tr>
@@ -121,9 +127,29 @@ $activite = get_activite();
                 <td><?= $value['date_d'] ?></td>
                 <td><?= $value['date_f'] ?></td>
                 <td>
-                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-success"><i class="fas fa-pen"></i></a>
-                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-danger"><i class="fas fa-trash"></i></a>
-                </td>
+                    <!-- Button ouvre modal modification -->
+                    <button type="button" class="btn-sm btn-outline-success border-0" data-toggle="modal" data-target="#<?= $modalId ?>">
+                        <i class="fas fa-pen"></i>
+                    </button>
+
+                    <?php
+                        include '../include/modal_modification.php';
+                    ?>
+                                   
+                    <button type="button" class="btn-sm btn-outline-danger border-0" data-toggle="modal" data-target="#<?= $supprId ?>">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <?php
+                        include '../include/modal_suppression.php';
+                    ?>  
+
+                    <button type="button" class="btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#<?= $printId ?>">
+                        <i class="fas fa-print"></i>
+                    </button>     
+                    <?php
+                        include '../include/modal_impression.php';
+                    ?>      
+                 </td>
           </tr>
         </tbody>
     <?php
@@ -137,7 +163,11 @@ $activite = get_activite();
         $search = recherche_activite($_POST['description']);
         if (!empty($search) && is_array($search)):
             foreach ($search as $value):
-    ?>
+                $modalId = "editModal_" . $value['id_a'];
+                $supprId = "supprModal_" . $value['id_a'];
+                $printId = "printModal_" . $value['id_a'];
+
+    ?>      
         <tbody>
           <tr>
                 <td><?= $value['description'] ?></td>
@@ -145,8 +175,28 @@ $activite = get_activite();
                 <td><?= $value['date_d'] ?></td>
                 <td><?= $value['date_f'] ?></td>
                 <td>
-                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-success"><i class="fas fa-pen"></i></a>
-                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-danger"><i class="fas fa-trash"></i></a>
+                      <!-- Button ouvre modal modification -->
+                    <button type="button" class="btn-sm btn-outline-success border-0" data-toggle="modal" data-target="#<?= $modalId ?>">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    
+                    <?php
+                        include '../include/modal_modification.php';
+                        ?>
+                    <button type="button" class="btn-sm btn-outline-danger border-0" data-toggle="modal" data-target="#<?= $supprId ?>">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <?php
+                        include '../include/modal_suppression.php';
+                        ?>
+
+                    <button type="button" class="btn-sm btn-outline-danger border-0" data-toggle="modal" data-target="#<?= $printId ?>">
+                        <i class="fas fa-print"></i>
+                    </button>
+                    <?php
+                        include '../include/modal_impression.php';
+                    ?>
+                      
                 </td>
           </tr>
         </tbody>
@@ -161,6 +211,9 @@ $activite = get_activite();
         $search = recherche_deux_date($_POST['date_d'], $_POST['date_f']);
         if (!empty($search) && is_array($search)):
             foreach ($search as $value):
+                $modalId = "editModal_" . $value['id_a'];
+                $supprId = "supprModal_" . $value['id_a'];
+                $printId = "printModal_" . $value['id_a'];
     ?>
         <tbody>
           <tr>
@@ -169,8 +222,27 @@ $activite = get_activite();
                 <td><?= $value['date_d'] ?></td>
                 <td><?= $value['date_f'] ?></td>
                 <td>
-                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-success"><i class="fas fa-pen"></i></a>
-                      <a href="tous_activite.php?id=<?= $value['id_a'] ?>" class="btn-sm btn-outline-danger"><i class="fas fa-trash"></i></a>
+                      <!-- Button ouvre modal modification -->
+                    <button type="button" class="btn-sm btn-outline-success border-0" data-toggle="modal" data-target="#<?= $modalId ?>">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    
+                    <?php
+                        include '../include/modal_modification.php';
+                    ?>
+                    <button type="button" class="btn-sm btn-outline-danger border-0" data-toggle="modal" data-target="#<?= $supprId ?>">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <?php
+                        include '../include/modal_suppression.php';
+                    ?>
+
+                    <button type="button" class="btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#<?= $printId ?>">
+                        <i class="fas fa-print"></i>
+                    </button>
+                    <?php
+                        include '../include/modal_impression.php';
+                    ?>
                 </td>
           </tr>
         </tbody>
@@ -182,7 +254,11 @@ $activite = get_activite();
     endif;
     ?>
 </table>
-
+<div class="float-rigth">
+    <a href="../model/imprime_activite.php?all=true" class="btn btn-secondary mx-2">
+            <i class="fas fa-print"></i>Imprimer tous les activité
+        </a>
+</div>
       
 <?php
 include_once 'footer.php'
