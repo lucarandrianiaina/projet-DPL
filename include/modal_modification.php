@@ -12,16 +12,13 @@
                                         <label for="edit_description">Description</label>
                                         <input type="text" class="form-control" name="description" value="<?= $value['description'] ?>">
                                         <label for="edit_date_d">Date début</label>
-                                        <input type="date" class="form-control" name="date_d" value="<?= $value['date_d'] ?>">
+                                        <input type="date" class="form-control" name="date_d" value="<?= to_fr($value['date_d']) ?>">
                                         
                                         <label for="edit_date_f">Date fin</label>
-                                        <input type="date" class="form-control" name="date_f" value="<?= $value['date_f'] ?>">
+                                        <input type="date" class="form-control" name="date_f" value="<?= to_fr($value['date_f']) ?>">
                                         
-                                        <button type="submit" class="btn btn-primary mt-2" name="ajout">Enregistrer</button>
+                                        <button type="submit" class="btn btn-primary mt-2" name="ajout">MODIFIER</button>
                                     </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
                                 </div>
                             </div>
                         </div>

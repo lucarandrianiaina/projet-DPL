@@ -2,102 +2,129 @@
 session_start();
 ?>
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Login</title>
-
-    <!-- Custom fonts for this template-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../public/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="../public/css/sb-admin-2.min.css" rel="stylesheet">
-
+    <title>Login</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            font-family: Century Gothic;
+        }
+        body{
+            background-color: #6ca3aa;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container{
+            background-color: #409aa5;
+            width: 400px;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .icon{
+            background-color: #00264d;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: relative;
+            top: -75px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .img-logo{
+            position: relative;
+            top: -80px;
+            width: 200px;
+            height: 50px;
+        }
+        .form{
+            position: relative;
+            top: -60px;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-group{
+            margin-bottom: 15px;
+            border-bottom: 2px solid #fff;
+            margin-left: 40px;
+            margin-right: 40px;
+        }
+        .form-group input{
+            color: #fff;
+            font-size: 15pt;
+            border: none;
+            background-color: transparent;
+        }
+        .btn{
+            background-color: #00264d;
+            color: #fff;
+            font-size: 10pt;
+            position: relative;
+            bottom: -40px;
+            width: 90%;
+            height: 50px;
+            border: none;
+            cursor: pointer;
+        }
+        .form-group input:focus{
+            outline: none;
+        }
+        i{
+            margin-right: 5px;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        .alert {
+        padding: 15px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        }
+        .alert-danger {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+        }
+    </style>
 </head>
-
-<body class="bg-gradient-primary">
-
+<body>
     <div class="container">
-
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-
-            <div class="col-xl-10 col-lg-12 col-md-9">
-
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                            <div class="col-lg-6">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Se connécter</h1>
-                                    </div>
-                                    <form class="user" action="../model/login.php" method="post">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-user"
-                                                name="nom_u"
-                                                placeholder="Entrer votre nom d'utilisateur">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" class="form-control form-control-user"
-                                                name="mdp" placeholder="Entrer votre mot de passe">
-                                        </div>
-
-                                        <!-- <div class="form-group">
-                                            <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
-                                                <label class="custom-control-label" for="customCheck">Remember
-                                                    Me</label>
-                                            </div>
-                                        </div> -->
-                                        <?php if (!empty($_SESSION['message']['text'])):?>
-                                                <div class="alert alert-<?= $_SESSION['message']['type'] ?>">
-                                                        <?= $_SESSION['message']['text'] ?>
-                                                        <?php
-                                                            unset($_SESSION['message']);
-                                                        ?>
-                                                    </div>
-                                        <?php endif; ?>
-                                        <input type="submit" value="connexion" class="btn btn-primary btn-user btn-block" name="connexion">
-                                    </form>
-                                    <hr>
-                                    <div class="text-center">
-                                        <a class="small" href="forgot-password.html">Mot de passe oublié?</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="icon">
+                <i class="fas fa-user fa-5x"></i>
+            </div>
+            <img src="../public/images/Logo.png" alt="logo E-gestion" class="img-logo">
+            <form action="../model/login.php" method="post" class="form">
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user fa-2x"></i></label>
+                    <input type="text" class="text-box" name="nom_u" id="name" placeholder="Nom d'utilisateur">
+                </div>
+                <div class="form-group">
+                    <label for="mdp"><i class="fas fa-lock fa-2x"></i></label>
+                    <input type="password" class="text-box" name="mdp" id="mdp" placeholder="Mot de passe">
                 </div>
 
-            </div>
-
-        </div>
-
+                <?php if (!empty($_SESSION['message']['text'])):?>
+                    <div class="alert alert-<?= $_SESSION['message']['type'] ?>">
+                        <?= $_SESSION['message']['text'] ?>
+                        <?php
+                            unset($_SESSION['message']);
+                        ?>
+                    </div>
+                <?php endif; ?>
+                <input type="submit" value="LOGIN" class="btn" name="connexion">
+            </form>
     </div>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="../public/vendor/jquery/jquery.min.js"></script>
-    <script src="../public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="../public/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
 </body>
-
 </html>

@@ -22,10 +22,10 @@ if(has_permission($_SESSION['utilisateur'], 'edit_post')){
                         
                               $req->execute(array($description, $date_d, $date_f, $id));   
                               if ( $req->rowCount()!=0) {
-                                    $_SESSION['message']['text'] = "ce tache est modifié";
+                                    $_SESSION['message']['text'] = "Modification réussit";
                                     $_SESSION['message']['type'] = "success";
                                 }else {
-                                    $_SESSION['message']['text'] = "Une erreur s'est produite lors de la modification";
+                                    $_SESSION['message']['text'] = "Modification non réussit";
                                     $_SESSION['message']['type'] = "danger";
                                 }
                         }

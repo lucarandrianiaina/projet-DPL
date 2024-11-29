@@ -1,4 +1,5 @@
 <?php
+$title_head = 'GÉRER LES UTILISATEURS';
 include_once 'header.php'
 ?>
 

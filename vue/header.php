@@ -40,6 +40,16 @@ $user = get_utilisateur($_SESSION['utilisateur']);
     <!-- Custom styles for this template-->
     <link href="../public/css/sb-admin-2.min.css" rel="stylesheet">
 
+     <!-- Custom styles for this page -->
+
+     <link href="../public/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+     <link href="../public/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <style>
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+    </style>
+
 </head>
 
 <body id="page-top">
@@ -48,14 +58,11 @@ $user = get_utilisateur($_SESSION['utilisateur']);
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: #6ca3aa;">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">DPL</div>
+                <img src="../public/images/Logo.png" alt="logo E-Gestion" style="width: 150px;">
             </a>
 
             <!-- separateur -->
@@ -86,7 +93,7 @@ $user = get_utilisateur($_SESSION['utilisateur']);
             <li class="nav-item active">
                 <a class="nav-link" href="activite.php?act=EC">
                     <i class="fas fa-calendar-alt"></i>
-                    <span>calendrier des activités</span></a>
+                    <span>Activités</span></a>
             </li>
 
             <?php if(has_permission($_SESSION['utilisateur'], 'create_post') && has_permission($_SESSION['utilisateur'], 'edit_post') && has_permission($_SESSION['utilisateur'], 'delete_post') && has_permission($_SESSION['utilisateur'], 'view_post')):?>
@@ -163,7 +170,7 @@ $user = get_utilisateur($_SESSION['utilisateur']);
 
                     <!-- page title -->
                     <h3 class="text-center">
-                        <?= $title == 'index'? 'Tableau de bord' : $title ?>
+                        <?=$title_head?>
                     </h3>
                     <ul class="navbar-nav ml-auto">
 

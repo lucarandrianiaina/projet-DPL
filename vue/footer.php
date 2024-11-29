@@ -31,12 +31,13 @@
     <!-- Custom scripts for all pages-->
     <script src="../public/js/sb-admin-2.min.js"></script>
 
+    <script src="../public/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="../public/vendor/datatables/jquery.dataTables.min.js"></script>
     <!-- Page level plugins -->
     <script src="../public/vendor/chart.js/Chart.min.js"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+    <script src="../public/js/script.js"></script>
+
 
 </body>
 

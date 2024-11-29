@@ -1,4 +1,5 @@
 <?php
+$title_head = 'RAPPORT D\'ACTIVITÉ';
 include_once 'header.php';
 $activite = get_activite();
 ?>

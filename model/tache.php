@@ -12,7 +12,7 @@ if(has_permission($_SESSION['utilisateur'], 'create_post')){
             if ($_SERVER["REQUEST_METHOD"] == "POST"){
                   if(!empty($date_d) && !empty($date_f) && !empty($id_resp) && !empty($description)){
                         if(strtotime($date_d)<strtotime(date('Y-m-d')) || strtotime($date_f)<strtotime(date('Y-m-d')) || strtotime($date_f)<strtotime($date_d)){
-                              $_SESSION['message']['text'] = "veuiller bien verifier le date";
+                              $_SESSION['message']['text'] = "veuiller bien verifier les dates";
                               $_SESSION['message']['type'] = "danger";
                         }else{
                               
@@ -21,10 +21,10 @@ if(has_permission($_SESSION['utilisateur'], 'create_post')){
                         
                               $req->execute(array($description, $id_resp, $date_d, $date_f));   
                               if ( $req->rowCount()!=0) {
-                                    $_SESSION['message']['text'] = "ce tache est enregitré";
+                                    $_SESSION['message']['text'] = "Activité est enregitré avec succés";
                                     $_SESSION['message']['type'] = "success";
                                 }else {
-                                    $_SESSION['message']['text'] = "Une erreur s'est produite lors de l'enregistrement";
+                                    $_SESSION['message']['text'] = "Enregistrement non réussit";
                                     $_SESSION['message']['type'] = "danger";
                                 }
                         }

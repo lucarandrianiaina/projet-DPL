@@ -1,6 +1,10 @@
 <?php
 include_once 'connexion.php';
+//class utiliser pour phpmailer
 
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 function get_personnel($id = null)
 {
     if (!empty($id)) {
@@ -45,7 +49,7 @@ function get_service($id = null)
 }
 
 function get_tache_en_cours(){
-    $sql = "SELECT activite.description, activite.date_d, activite.date_f, personnel.nom_p  FROM activite
+    $sql = "SELECT activite.description, DATE_FORMAT(activite.date_d,'%d %M %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %M %Y') AS date_f, personnel.nom_p, personnel.mail  FROM activite
     INNER JOIN personnel ON personnel.id_p = activite.id_resp
     WHERE activite.date_d <= CURDATE() AND activite.date_f >= CURDATE() ORDER BY activite.date_f";
 
@@ -57,7 +61,7 @@ function get_tache_en_cours(){
 }
 
 function get_tache_a_faire(){
-    $sql = "SELECT activite.date_d, activite.date_f, personnel.nom_p, activite.description FROM activite
+    $sql = "SELECT DATE_FORMAT(activite.date_d,'%d %M %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %M %Y') AS date_f, personnel.nom_p, activite.description FROM activite
     INNER JOIN personnel ON personnel.id_p = activite.id_resp
     WHERE activite.date_d > CURDATE() ORDER BY activite.date_d ";
 
@@ -69,7 +73,7 @@ function get_tache_a_faire(){
 }
 
 function get_tache_fini(){
-    $sql = "SELECT activite.date_d, activite.date_f, personnel.nom_p, activite.description FROM activite 
+    $sql = "SELECT DATE_FORMAT(activite.date_d,'%d %M %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %M %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
     INNER JOIN personnel ON personnel.id_p = activite.id_resp 
     WHERE activite.date_f < CURDATE() ORDER BY activite.date_f DESC ";
 
@@ -82,7 +86,7 @@ function get_tache_fini(){
 
 function get_activite($id = null){
     if (!empty($id)) {
-        $sql = "SELECT activite.*,personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp WHERE id_a=?";
+        $sql = "SELECT activite.id_a,activite.description,DATE_FORMAT(activite.date_d,'%d %M %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %M %Y') AS date_f,personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp WHERE id_a=?";
   
         $req = $GLOBALS['connexion']->prepare($sql);
   
@@ -90,7 +94,7 @@ function get_activite($id = null){
   
         return $req->fetch(PDO::FETCH_ASSOC);
       } else {
-          $sql = "SELECT activite.*, personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp ORDER BY id_a";
+          $sql = "SELECT activite.id_a,activite.description,DATE_FORMAT(activite.date_d,'%d %M %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %M %Y') AS date_f,personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp ORDER BY id_a";
   
           $req = $GLOBALS['connexion']->prepare($sql);
   
@@ -247,30 +251,68 @@ function genererMotDePasse() {
         return $req->fetchAll();
   }
 
-  function send_mail($destinataire){
+
+function moitie_date($date_d , $date_f){
+    // Création des deux dates
+    $date1 = new DateTime($date_d);
+    $date2 = new DateTime($date_f);
+    // Calcul de la différence entre les deux dates
+    $interval = $date1->diff($date2);
+    // Récupération du nombre de jours de l'intervalle et division par 2
+    $days = ceil($interval->days / 2);
+    // Création de la date médiane en ajoutant la moitié des jours à la première date
+    $dateMedian = clone $date1;
+    $dateMedian->add(new DateInterval("P{$days}D"));
+    return $dateMedian->format('d-m-y'); // Affiche la date médiane
+}
+
+
+function to_fr(string $date_en){
+    $date_fr = DateTime::createFromFormat('j F Y', $date_en)->format('d/m/Y');
+    return $date_fr; // Affichera : 20/12/2024  
+}
+
+
+
+
+
+
+
+
+
+
+
+  function send_mail($destinataire, $message=['head'=>'','body'=>'' ,'alt_body'=>'']){
+    //Import PHPMailer classes into the global namespace
+    //These must be at the top of your script, not inside a function
+    require_once '../include/PHPMailer/src/Exception.php';
+    require_once '../include/PHPMailer/src/PHPMailer.php';
+    require_once '../include/PHPMailer/src/SMTP.php';
+    
+    //Create an instance; passing `true` enables exceptions
+    $mail = new PHPMailer(true);
+
+    //Charset
+    $mail->CharSet = 'UTF-8';
         try {
-            //Server settings
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-            $mail->isSMTP();                                            //Send using SMTP
-            $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
-            $mail->Port = 587;                                   //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-            $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-            $mail->Username   = 'dplsendnotif@gmail.com';                     //SMTP username
-            $mail->Password   = '20LOISIR2024';                               //SMTP password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+            // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+            $mail->isSMTP();                                      // Définir l'utilisation de SMTP
+            $mail->Host = 'localhost';                          // Adresse du serveur SMTP (Mailhog)
+            $mail->Port = 1025;                                   // Port SMTP de Mailhog
+            $mail->SMTPAuth = false; ;                           //pas d'autentification
 
             //Recipients
-            $mail->setFrom('dpl@gmail.com', 'Mailer');
+            $mail->setFrom('dpl@gmail.com', 'notification activité');
             $mail->addAddress($destinataire);     //Add a recipient
 
             //Content
             $mail->isHTML(true);                                  //Set email format to HTML
-            $mail->Subject = 'Here is the subject';
-            $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-            $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+            $mail->Subject = $message['head'];
+            $mail->Body    = $message['body'];
+            $mail->AltBody = $message['alt_body'];
 
             return $mail->send();
-        } catch (Exception $e) {
+        } catch (Exception) {
             return "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
 

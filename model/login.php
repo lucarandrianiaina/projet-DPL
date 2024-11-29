@@ -22,7 +22,7 @@ if(isset($_POST['connexion'])){
                   header('Location: ../vue/login.php');
             }
       }else{
-            $_SESSION['message']['text'] = "veuiller remplire tous les champ";
+            $_SESSION['message']['text'] = "veuiller remplire tous les champs";
             $_SESSION['message']['type'] = "danger";
             header('Location: ../vue/login.php');
       }

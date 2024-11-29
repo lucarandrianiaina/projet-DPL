@@ -1,4 +1,5 @@
 <?php
+$title_head = 'PERSONNEL';
 include_once 'header.php';
 
 if(has_permission($_SESSION['utilisateur'], 'create_post') && has_permission($_SESSION['utilisateur'], 'edit_post') && has_permission($_SESSION['utilisateur'], 'delete_post') && has_permission($_SESSION['utilisateur'], 'view_post')){
@@ -46,11 +47,12 @@ $service = get_service();
       </div>
       <div class="col-sm-12 col-lg-8 border rounded">
             <!-- tableau de données -->
-            <table class="table">
+            <table class="table table-hover">
                   <thead>
                         <tr>
                               <th scope="col">#</th>
                               <th scope="col">nom</th>
+                              <th scope="col">mail</th>
                         </tr>
                   </thead>
                   <tbody>
@@ -61,6 +63,7 @@ $service = get_service();
                         <tr>
                               <th scope="row"><?= $value['id_p']?></th>
                               <td><?= $value['nom_p']?></td>
+                              <td><?= $value['mail']?></td>
                         </tr>
                         <?php
                                     endforeach;
