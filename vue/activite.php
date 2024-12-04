@@ -50,7 +50,6 @@ $activite = get_activite();
                                     
                                     
                                     <input type="submit" value="AJOUTER" class="btn btn-primary m-2 w-75" name='ajout'>
-                                    <button type="button" class="btn btn-danger m-2" data-dismiss="modal"><i class="fas fa-times"></i></button>
                              </form>
                         </div>
 
@@ -83,9 +82,9 @@ $activite = get_activite();
     // Afficher toutes les activités si aucun critère de recherche n'a été soumis
     if (!empty($activite) && is_array($activite)):
         foreach ($activite as $key => $value):
-                $modalId = "editModal_" . $value['id_a'];
-                $supprId = "supprModal_" . $value['id_a'];
-                $printId = "printModal_" . $value['id_a'];
+            //     $modalId = "editModal_" . $value['id_a'];
+            //     $supprId = "supprModal_" . $value['id_a'];
+            //     $printId = "printModal_" . $value['id_a'];
     ?>
           <tr>
                 <td><?= $value['description'] ?></td>
@@ -93,28 +92,26 @@ $activite = get_activite();
                 <td><?= $value['date_d'] ?></td>
                 <td><?= $value['date_f'] ?></td>
                 <td>
-                    <!-- Button ouvre modal modification -->
-                    <button type="button" class="btn-sm btn-outline-success border-0" data-toggle="modal" data-target="#<?= $modalId ?>">
-                        <i class="fas fa-pen"></i>
-                    </button>
+                        <!-- Button ouvre modal modification -->
+                        <button type="button" class="btn-sm btn-outline-success border-0" data-toggle="modal" data-target="#<?= $modalId ?>">
+                              <i class="fas fa-pen"></i>
+                        </button>
 
-                    <?php
-                        include '../include/modal_modification.php';
-                    ?>
-                                   
-                    <button type="button" class="btn-sm btn-outline-danger border-0" data-toggle="modal" data-target="#<?= $supprId ?>">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                    <?php
-                        include '../include/modal_suppression.php';
-                    ?>  
+                        
+                                    
+                        <button type="button" class="btn-sm btn-outline-danger border-0" data-toggle="modal" data-target="#<?= $supprId ?>">
+                              <i class="fas fa-trash"></i>
+                        </button>
+                        <?php
+                              include '../include/modal_suppression.php';
+                        ?>  
 
-                    <button type="button" class="btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#<?= $printId ?>">
-                        <i class="fas fa-print"></i>
-                    </button>     
-                    <?php
-                        include '../include/modal_impression.php';
-                    ?>      
+                        <button type="button" class="btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#<?= $printId ?>">
+                              <i class="fas fa-print"></i>
+                        </button>     
+                        <?php
+                              include '../include/modal_impression.php';
+                        ?>      
                  </td>
           </tr>
           <?php

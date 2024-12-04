@@ -16,7 +16,10 @@ function get_personnel($id = null)
 
         return $req->fetch(PDO::FETCH_ASSOC);
     } else {
-        $sql = "SELECT * FROM personnel";
+        $sql = "SELECT personnel.*, login.id_l 
+FROM personnel 
+INNER JOIN login ON login.id_l = personnel.id_login;
+";
 
         $req = $GLOBALS['connexion']->prepare($sql);
 
@@ -49,44 +52,72 @@ function get_service($id = null)
 }
 
 function get_tache_en_cours(){
-    $sql = "SELECT activite.description, DATE_FORMAT(activite.date_d,'%d %M %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %M %Y') AS date_f, personnel.nom_p, personnel.mail  FROM activite
-    INNER JOIN personnel ON personnel.id_p = activite.id_resp
-    WHERE activite.date_d <= CURDATE() AND activite.date_f >= CURDATE() ORDER BY activite.date_f";
+    $expired = false;
+    $sql = "SELECT 
+    id_a, activite.description, 
+        DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
+        DATE_FORMAT(activite.date_f, '%d %b %Y') AS date_f, 
+        personnel.nom_p, 
+        personnel.mail
+    FROM 
+        activite
+    INNER JOIN 
+        personnel ON personnel.id_p = activite.id_resp
+    WHERE 
+        activite.date_d <= CURDATE() 
+        AND activite.date_f >= CURDATE() 
+        AND expired = ?
+    ORDER BY 
+        activite.date_f;";
 
     $req = $GLOBALS['connexion']->prepare($sql);
 
-    $req->execute();
+    $req->execute(array($expired));
 
     return $req->fetchAll();
 }
 
 function get_tache_a_faire(){
-    $sql = "SELECT DATE_FORMAT(activite.date_d,'%d %M %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %M %Y') AS date_f, personnel.nom_p, activite.description FROM activite
+    $expired = false;
+    $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite
     INNER JOIN personnel ON personnel.id_p = activite.id_resp
-    WHERE activite.date_d > CURDATE() ORDER BY activite.date_d ";
+    WHERE activite.date_d > CURDATE() AND expired = ? ORDER BY activite.date_d ";
 
     $req = $GLOBALS['connexion']->prepare($sql);
 
-    $req->execute();
+    $req->execute(array($expired));
 
     return $req->fetchAll();
 }
 
 function get_tache_fini(){
-    $sql = "SELECT DATE_FORMAT(activite.date_d,'%d %M %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %M %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
+    $expired = false;
+    $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
     INNER JOIN personnel ON personnel.id_p = activite.id_resp 
-    WHERE activite.date_f < CURDATE() ORDER BY activite.date_f DESC ";
+    WHERE activite.date_f < CURDATE() AND expired = ? ORDER BY activite.date_f DESC ";
 
     $req = $GLOBALS['connexion']->prepare($sql);
 
-    $req->execute();
+    $req->execute(array($expired));
+
+    return $req->fetchAll();
+}
+function get_tache_expired(){
+    $expired = true;
+    $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
+    INNER JOIN personnel ON personnel.id_p = activite.id_resp 
+    WHERE activite.date_f < CURDATE() AND expired = ? ORDER BY activite.date_f DESC ";
+
+    $req = $GLOBALS['connexion']->prepare($sql);
+
+    $req->execute(array($expired));
 
     return $req->fetchAll();
 }
 
 function get_activite($id = null){
     if (!empty($id)) {
-        $sql = "SELECT activite.id_a,activite.description,DATE_FORMAT(activite.date_d,'%d %M %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %M %Y') AS date_f,personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp WHERE id_a=?";
+        $sql = "SELECT activite.id_a,activite.description,activite.date_d, activite.date_f,personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp WHERE id_a=?";
   
         $req = $GLOBALS['connexion']->prepare($sql);
   
@@ -94,7 +125,7 @@ function get_activite($id = null){
   
         return $req->fetch(PDO::FETCH_ASSOC);
       } else {
-          $sql = "SELECT activite.id_a,activite.description,DATE_FORMAT(activite.date_d,'%d %M %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %M %Y') AS date_f,personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp ORDER BY id_a";
+          $sql = "SELECT activite.id_a,activite.description,activite.date_d, activite.date_f,personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp";
   
           $req = $GLOBALS['connexion']->prepare($sql);
   
@@ -105,7 +136,7 @@ function get_activite($id = null){
 }
 
 function get_activite_on_annee($annee){
-    $sql = "SELECT activite.*,personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp WHERE YEAR(date_d) = ?";
+    $sql = "SELECT activite.*,personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp WHERE YEAR(date_d) = ? ORDER BY id_a";
   
     $req = $GLOBALS['connexion']->prepare($sql);
 
@@ -120,7 +151,7 @@ function get_activite_mensuel($annee, $mois){
     activite.description, 
     personnel.nom_p,
     activite.date_d,
-    activite.date_f
+    activite.date_f,expired
 FROM 
     activite
 INNER JOIN personnel ON personnel.id_p = activite.id_resp
@@ -134,6 +165,30 @@ WHERE
 
     return $req->fetchAll();
 }
+
+function get_activite_ebdomadaire($date) {
+    // Calculer la date du lundi de la semaine de la date donnée
+    $date_lundi = date('Y-m-d', strtotime($date . ' -' . (date('w', strtotime($date))) . ' days'));
+
+    // Calculer la date du dimanche de la semaine de la date donnée
+    $date_dimanche = date('Y-m-d', strtotime($date_lundi . ' + 6 days'));
+
+    // Requête SQL avec la plage de dates (lundi à dimanche)
+    $sql = "SELECT id_a, description,personnel.nom_p, date_d, date_f, expired
+            FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp
+            WHERE date_d >= :date_lundi
+            AND date_f <= :date_dimanche";
+
+    // Préparation de la requête
+    $req = $GLOBALS['connexion']->prepare($sql);
+
+    // Exécution de la requête avec les paramètres calculés pour lundi et dimanche
+    $req->execute(array(':date_lundi' => $date_lundi, ':date_dimanche' => $date_dimanche));
+
+    // Retourner toutes les activités trouvées
+    return $req->fetchAll();
+}
+
 function recherche_activite($description){
         $sql = "SELECT activite.*, personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp WHERE activite.description = ?";
   
@@ -163,6 +218,10 @@ function get_last_login(){
 
         return $req->fetch(PDO::FETCH_ASSOC);
 }
+
+
+
+
 
 function get_login_connexion($nom_u){
     $sql = "SELECT * FROM login WHERE nom_utilisateur = ?";
@@ -202,7 +261,7 @@ function has_permission($user_id, $permission) {
 
 function get_utilisateur($id=null){
     if (!empty($id)) {
-          $sql = "SELECT nom_utilisateur FROM login WHERE id_l = ?";
+          $sql = "SELECT id_l, nom_utilisateur, password, personnel.mail FROM login  INNER JOIN personnel ON personnel.id_login = login.id_l WHERE id_l = ?";
   
           $req = $GLOBALS['connexion']->prepare($sql);
   
@@ -267,9 +326,54 @@ function moitie_date($date_d , $date_f){
 }
 
 
-function to_fr(string $date_en){
-    $date_fr = DateTime::createFromFormat('j F Y', $date_en)->format('d/m/Y');
-    return $date_fr; // Affichera : 20/12/2024  
+function transformDateFormat($date) {
+    // Créer un objet DateTime à partir de la date d'entrée
+    $dateTime = new DateTime($date);
+
+    // Retourner la date dans le format souhaité (jour/mois/année)
+    return $dateTime->format('d/m/Y');
+}
+
+function lundi_de_semaine($date) {
+    // Créer un objet DateTime à partir de la date donnée
+    $dateTime = new DateTime($date);
+    
+    // Récupérer le jour de la semaine (0 = dimanche, 1 = lundi, ..., 6 = samedi)
+    $jourSemaine = $dateTime->format('N');  // 1 pour lundi, 7 pour dimanche
+    
+    // Calculer l'écart par rapport au lundi
+    $dateTime->modify('-' . ($jourSemaine - 1) . ' days');
+    
+    // Retourner la date du lundi
+    return $date =['jour'=>$dateTime->format('d'), 'mois'=>$dateTime->format('m'), 'annee'=>$dateTime->format('Y')];
+}
+
+
+// Fonction pour obtenir le statut d'une activité
+function get_statut($date_d, $date_f, $expired) {
+    $current_date = new DateTime(); // Date actuelle
+    $start_date = new DateTime($date_d); // Date de début
+    $end_date = new DateTime($date_f); // Date de fin
+    
+    // Si l'activité est expirée
+    if ($expired) {
+        return 'Expiré';
+    }
+    
+    // Si l'activité est à venir (avant la date de début)
+    if ($current_date < $start_date) {
+        return 'À réaliser';
+    }
+    
+    // Si l'activité est en cours (entre la date de début et de fin)
+    if ($current_date >= $start_date && $current_date <= $end_date) {
+        return 'En cours';
+    }
+    
+    // Si l'activité est terminée (après la date de fin)
+    if ($current_date > $end_date) {
+        return 'Terminé';
+    }
 }
 
 

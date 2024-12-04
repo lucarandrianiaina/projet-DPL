@@ -46,6 +46,16 @@ foreach($activite as $value){
         <?=$compte==0 ? 'pas de message envoyer' : $compte.' message envoyer'?>
     </h4>
     <?php
+    // Définir la locale française
+    setlocale(LC_TIME, 'fr_FR');
+
+    // Date à convertir (exemple au format anglais)
+    $date_en = '2023-04-05';
+
+    // Convertir en format français
+    $date_fr = strftime('%d %M %Y', strtotime($date_en));
+
+    echo $date_fr;
     ?>
 </body>
 </html>

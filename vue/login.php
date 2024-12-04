@@ -97,6 +97,28 @@ session_start();
         background-color: #f2dede;
         border-color: #ebccd1;
         }
+        @media (max-width: 480px) {
+            .container {
+                width: 90%;
+                height: auto;
+                padding: 10px;
+            }
+            .icon {
+                width: 100px;
+                height: 100px;
+                top: -50px;
+            }
+            .img-logo {
+                width: 150px;
+            }
+            .form-group input {
+                font-size: 13pt;
+            }
+            .btn {
+                font-size: 12pt;
+                height: 45px;
+            }
+        }
     </style>
 </head>
 <body>

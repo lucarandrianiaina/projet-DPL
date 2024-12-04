@@ -7,10 +7,18 @@ $act = isset($_GET['act']) ? $_GET['act'] : 'FN';
 ?>
 
 <div class="row my-2">
-      <!-- Boutons pour les trois catégories de tâches -->
-      <a href="index.php?act=AF" class="btn btn-outline-primary <?= $act == 'AF' ? 'active' : '' ?>"><i class="fas fa-hourglass-half"></i> À faire</a>
-      <a href="index.php?act=EC" class="btn btn-outline-primary <?= $act == 'EC' ? 'active' : '' ?> mx-2"><i class="fas fa-clock"></i> En cours</a>
-      <a href="index.php?act=FN" class="btn btn-outline-primary <?= $act == 'FN' ? 'active' : '' ?>"><i class="fas fa-arrow-right"></i> Finies</a>
+    <div class="col-md-6 col-lg-3">
+        <a href="index.php?act=AF" class="btn btn-outline-primary <?= $act == 'AF' ? 'active' : '' ?>"><i class="fas fa-hourglass-half"></i> À réaliser</a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <a href="index.php?act=EC" class="btn btn-outline-primary <?= $act == 'EC' ? 'active' : '' ?>"><i class="fas fa-clock"></i> En cours</a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <a href="index.php?act=FN" class="btn btn-outline-primary <?= $act == 'FN' ? 'active' : '' ?>"><i class="fas fa-arrow-right"></i> Términé</a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <a href="index.php?act=EX" class="btn btn-outline-primary <?= $act == 'EX' ? 'active' : '' ?>"><i class="fas fa-box"></i> Expirés</a>
+    </div>
 </div>
 
 <?php
@@ -70,11 +78,38 @@ elseif ($act == 'EC'):
 
 <?php
 // Section "Finies"
-else:
+elseif($act == 'FN'):
 ?>
 <div class="row">
       <?php
       $fini = get_tache_fini();
+      if (!empty($fini) && is_array($fini)):
+      foreach ($fini as $value):
+            $date_f = new DateTime($value['date_f']);
+            $date_sys = new DateTime(date('Y-m-d'));
+            $reste = $date_sys->diff($date_f);
+      ?>
+      <div class="col-md-4">
+            <div class="card mb-4">
+                  <div class="card-body">
+                        <span class="badge badge-<?= $reste->days == 1 ? 'danger' : 'secondary' ?>" style="float:right;">
+                              <?= $reste->days == 1 ? 'hier' : 'il y a ' . $reste->days . 'j' ?>
+                        </span>
+                        <h5 class="card-title"><?= $value['description'] ?></h5>
+                        <p class="card-text">Du <?= $value['date_d'] ?> au <?= $value['date_f'] ?></p>
+                        <p class="card-text">Résponsable: <b><?= $value['nom_p'] ?></b></p>
+                        <a href="../model/expired.php?id=<?=$value['id_a']?> " style="float: right;" class="btn btn-danger btn-sm"><i class="fas fa-box"></i></a>
+                  </div>
+            </div>
+      </div>
+      <?php endforeach; endif; ?>
+</div>
+<?php
+else:
+?>
+<div class="row">
+      <?php
+      $fini = get_tache_expired();
       if (!empty($fini) && is_array($fini)):
       foreach ($fini as $value):
             $date_f = new DateTime($value['date_f']);
@@ -95,7 +130,6 @@ else:
       </div>
       <?php endforeach; endif; ?>
 </div>
-
 <?php endif; ?>
 
 <?php include_once 'footer.php'; ?>
