@@ -59,13 +59,24 @@ include_once 'header.php';
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Nom</th>
+                    <th scope="col">Nom d'utilisateur</th>
                     <th scope="col">Type de compte</th>
-                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
-                
+                <?php
+                $utilisateur = get_utilisateur();
+                if (!empty($utilisateur) && is_array($utilisateur)):
+                    foreach ($utilisateur as $key => $value):
+                ?>
+                <tr>
+                    <td><?=$value['nom_utilisateur']?></td>
+                    <td><?=$value['nom_r']?></td>
+                </tr>
+                <?php
+                    endforeach;
+                endif;
+                ?>
             </tbody>
         </table>
     </div>

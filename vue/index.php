@@ -27,7 +27,7 @@ if ($act == 'AF'):
 ?>
 <div class="row">
       <?php
-      $a_faire = get_tache_a_faire();
+      $a_faire = get_tache_a_faire($_SESSION['utilisateur']);
       if (!empty($a_faire) && is_array($a_faire)):
       foreach ($a_faire as $value):
             $date_d = new DateTime($value['date_d']);
@@ -54,7 +54,7 @@ elseif ($act == 'EC'):
 ?>
 <div class="row">
       <?php
-      $en_cours = get_tache_en_cours();
+      $en_cours = get_tache_en_cours($_SESSION['utilisateur']);
       if (!empty($en_cours) && is_array($en_cours)):
       foreach ($en_cours as $value):
             $date_f = new DateTime($value['date_f']);
@@ -82,7 +82,7 @@ elseif($act == 'FN'):
 ?>
 <div class="row">
       <?php
-      $fini = get_tache_fini();
+      $fini = get_tache_fini($_SESSION['utilisateur']);
       if (!empty($fini) && is_array($fini)):
       foreach ($fini as $value):
             $date_f = new DateTime($value['date_f']);
@@ -109,7 +109,7 @@ else:
 ?>
 <div class="row">
       <?php
-      $fini = get_tache_expired();
+      $fini = get_tache_expired($_SESSION['utilisateur']);
       if (!empty($fini) && is_array($fini)):
       foreach ($fini as $value):
             $date_f = new DateTime($value['date_f']);

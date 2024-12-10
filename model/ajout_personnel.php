@@ -2,11 +2,12 @@
 include 'fonction.php';
 $nom = $_POST['nom_p'];
 $service = $_POST['service'];
+$mail = $_POST['mail'];
 if(has_permission($_SESSION['utilisateur'], 'create_post')){
 
     if (isset($_POST['ajout'])) {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            if (!empty($nom)) {
+            if (!empty($nom) && !empty($mail) && !empty($service)) {
                 // Générer un login par défaut
                 $login = genererLoginParDefaut($nom);
                 $password = genererMotDePasse();
@@ -20,9 +21,9 @@ if(has_permission($_SESSION['utilisateur'], 'create_post')){
                 $idLogin = $connexion->lastInsertId();
                 
                 // Créer le personnel avec l'ID du login
-                $sql = "INSERT INTO personnel (nom_p, service, id_login) VALUES (?, ?, ?)";
+                $sql = "INSERT INTO personnel (nom_p, service,mail, id_login) VALUES (?, ?, ?, ?)";
                 $req = $connexion->prepare($sql);
-                $req->execute([$nom, $service, $idLogin]);
+                $req->execute([$nom, $service,$mail, $idLogin]);
     
                 //creer sa permission par defaut
                 $sql_permission = "INSERT INTO role_utilisateur (id_utilisateur, id_role) VALUES (?, ?)";

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 04 déc. 2024 à 10:43
+-- Généré le : mar. 10 déc. 2024 à 12:33
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -41,7 +41,7 @@ CREATE TABLE `activite` (
 --
 
 INSERT INTO `activite` (`id_a`, `description`, `id_resp`, `date_d`, `date_f`, `expired`) VALUES
-(1, 'activite_1', 1, '2024-12-03', '2024-12-11', 41),
+(1, 'activite', 1, '2024-12-04', '2024-12-11', 0),
 (2, 'activite_1', 2, '2024-12-08', '2024-12-13', 0),
 (3, 'activite_2', 3, '2024-11-16', '2024-11-21', 0),
 (4, 'activite_3', 2, '2024-12-25', '2024-12-30', 0),
@@ -141,7 +141,8 @@ INSERT INTO `activite` (`id_a`, `description`, `id_resp`, `date_d`, `date_f`, `e
 (98, 'activite_47', 2, '2024-11-05', '2024-11-10', 0),
 (99, 'activite_48', 4, '2024-12-08', '2024-12-13', 0),
 (100, 'activite_49', 1, '2024-12-24', '2024-12-29', 0),
-(101, 'activite_50', 3, '2024-11-01', '2024-11-06', 0);
+(101, 'activite_50', 3, '2024-11-01', '2024-11-06', 0),
+(102, 'activite_7', 5, '2024-12-12', '2024-12-25', 0);
 
 -- --------------------------------------------------------
 
@@ -152,18 +153,20 @@ INSERT INTO `activite` (`id_a`, `description`, `id_resp`, `date_d`, `date_f`, `e
 CREATE TABLE `login` (
   `id_l` int(11) NOT NULL,
   `nom_utilisateur` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `token` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `login`
 --
 
-INSERT INTO `login` (`id_l`, `nom_utilisateur`, `password`) VALUES
-(2, 'admin', '$2y$10$HvoZe17HIuUCiMUuLsELGuL8TsAkDM3XU1EVdLTrcXi2/ksyI0zmG'),
-(3, 'personnel_2', '$2y$10$0tSFQBxALNNzPIJz32sJSO7GmwFz08D0SaNKKcyxOt./vMtxcylXe'),
-(4, 'personnel_3', '$2y$10$A63YFV/Gz.qGZTarTGP9ZuiFUMjn3uKrJ2E1uNttNrSIr.CwNFaze'),
-(5, 'personnel_4', '$2y$10$Qf69kJ3FMxVGqh8HG6paWewgnQ8Fqmb3tIuQQECg/YEvnN12ch1ei');
+INSERT INTO `login` (`id_l`, `nom_utilisateur`, `password`, `token`) VALUES
+(2, 'admin', '$2y$10$AuTAvTXdCJdAjfYy0WOqZuPwUE3sMDcMTF2IHwbYxh0oTB1NiM3LK', NULL),
+(3, 'personnel_2', '$2y$10$0tSFQBxALNNzPIJz32sJSO7GmwFz08D0SaNKKcyxOt./vMtxcylXe', NULL),
+(4, 'personnel_3', '$2y$10$A63YFV/Gz.qGZTarTGP9ZuiFUMjn3uKrJ2E1uNttNrSIr.CwNFaze', NULL),
+(5, 'personnel_4', '$2y$10$Qf69kJ3FMxVGqh8HG6paWewgnQ8Fqmb3tIuQQECg/YEvnN12ch1ei', NULL),
+(6, 'personnel_5', '$2y$10$YviuuzZorRwkurTzllIjTesakQqG5pyEY8h1Zpqr9Tt3odoorZ46O', NULL);
 
 -- --------------------------------------------------------
 
@@ -206,9 +209,10 @@ CREATE TABLE `personnel` (
 
 INSERT INTO `personnel` (`id_p`, `nom_p`, `id_login`, `service`, `mail`) VALUES
 (1, 'personnel_1', 2, 1, 'personnel1@gmail.com'),
-(2, 'personnel_2', 3, 2, ''),
-(3, 'personnel_3', 4, 2, ''),
-(4, 'personnel_4', 5, 1, '');
+(2, 'personnel_2', 3, 2, 'personnel2@gmail.com'),
+(3, 'personnel_3', 4, 2, 'personnel3@gmail.com'),
+(4, 'personnel_4', 5, 1, 'personnel4@gmail.com'),
+(5, 'personnel_5', 6, 2, 'personnel5@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -272,9 +276,10 @@ CREATE TABLE `role_utilisateur` (
 
 INSERT INTO `role_utilisateur` (`id_utilisateur`, `id_role`) VALUES
 (2, 1),
-(3, 2),
-(4, 3),
-(5, 3);
+(3, 3),
+(4, 2),
+(5, 3),
+(6, 3);
 
 -- --------------------------------------------------------
 
@@ -362,13 +367,13 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT pour la table `activite`
 --
 ALTER TABLE `activite`
-  MODIFY `id_a` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id_a` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT pour la table `login`
 --
 ALTER TABLE `login`
-  MODIFY `id_l` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_l` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `permission`
@@ -380,7 +385,7 @@ ALTER TABLE `permission`
 -- AUTO_INCREMENT pour la table `personnel`
 --
 ALTER TABLE `personnel`
-  MODIFY `id_p` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_p` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `role`

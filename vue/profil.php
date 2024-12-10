@@ -38,10 +38,11 @@ $user_connected = get_utilisateur($_SESSION['utilisateur'])
             </div>
             <p>
                   Adresse mail : <b> <?=$user_connected['mail'];?></b>
-                  <a href="#" class="mx-5">Modifié</a>
+                  <a href="change_mail.php" class="mx-5">Modifié</a>
             </p>
             <p>
                   <a href="#" data-toggle="modal" data-target="#change_mdp">Chager le mot de passe</a>
+                  <!-- modale chager mdp -->
                   <div class="modal" id="change_mdp" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                               <div class="modal-content">

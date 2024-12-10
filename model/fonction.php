@@ -33,13 +33,13 @@ INNER JOIN login ON login.id_l = personnel.id_login;
 function get_service($id = null)
 {
     if (!empty($id)) {
-      //   $sql = "SELECT * FROM personnel WHERE id_p=?";
+        $sql = "SELECT service FROM personnel WHERE id_p=?";
 
-      //   $req = $GLOBALS['connexion']->prepare($sql);
+        $req = $GLOBALS['connexion']->prepare($sql);
 
-      //   $req->execute(array($id));
+        $req->execute(array($id));
 
-      //   return $req->fetch();
+        return $req->fetch(PDO::FETCH_ASSOC);
     } else {
         $sql = "SELECT * FROM service";
 
@@ -50,69 +50,224 @@ function get_service($id = null)
         return $req->fetchAll();
     }
 }
+function get_personnel_to_user($id_user){
+    $sql = "SELECT p.id_p
+    FROM personnel p
+    JOIN login l ON p.id_login = l.id_l
+    WHERE l.id_l = ?;
+    ";
 
-function get_tache_en_cours(){
-    $expired = false;
-    $sql = "SELECT 
-    id_a, activite.description, 
-        DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
-        DATE_FORMAT(activite.date_f, '%d %b %Y') AS date_f, 
-        personnel.nom_p, 
-        personnel.mail
-    FROM 
-        activite
-    INNER JOIN 
-        personnel ON personnel.id_p = activite.id_resp
-    WHERE 
-        activite.date_d <= CURDATE() 
-        AND activite.date_f >= CURDATE() 
-        AND expired = ?
-    ORDER BY 
-        activite.date_f;";
+        $req = $GLOBALS['connexion']->prepare($sql);
 
-    $req = $GLOBALS['connexion']->prepare($sql);
+        $req->execute(array($id_user));
 
-    $req->execute(array($expired));
-
-    return $req->fetchAll();
+        return $req->fetch(PDO::FETCH_ASSOC);
 }
 
-function get_tache_a_faire(){
-    $expired = false;
-    $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite
-    INNER JOIN personnel ON personnel.id_p = activite.id_resp
-    WHERE activite.date_d > CURDATE() AND expired = ? ORDER BY activite.date_d ";
 
-    $req = $GLOBALS['connexion']->prepare($sql);
 
-    $req->execute(array($expired));
-
-    return $req->fetchAll();
+function get_tache_en_cours($id_user){
+    if(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'delete_post') && has_permission($id_user, 'view_post')){
+        $expired = false;
+        $sql = "SELECT 
+        id_a, activite.description, 
+            DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
+            DATE_FORMAT(activite.date_f, '%d %b %Y') AS date_f, 
+            personnel.nom_p, 
+            personnel.mail
+        FROM 
+            activite
+        INNER JOIN 
+            personnel ON personnel.id_p = activite.id_resp
+        WHERE 
+            activite.date_d <= CURDATE() 
+            AND activite.date_f >= CURDATE() 
+            AND expired = ?
+        ORDER BY 
+            activite.date_f;";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired));
+    
+        return $req->fetchAll();
+    }elseif(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'view_post')){
+        $expired = false;
+        $personnel = get_personnel_to_user($id_user);
+        $service = get_service($personnel['id_p']);
+        $sql = "SELECT 
+        id_a, activite.description, 
+            DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
+            DATE_FORMAT(activite.date_f, '%d %b %Y') AS date_f, 
+            personnel.nom_p, 
+            personnel.mail
+        FROM 
+            activite
+        INNER JOIN 
+            personnel ON personnel.id_p = activite.id_resp
+        WHERE 
+            activite.date_d <= CURDATE() 
+            AND activite.date_f >= CURDATE() 
+            AND expired = ? AND personnel.service = ?
+        ORDER BY 
+            activite.date_f;";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired, $service['service']));
+    
+        return $req->fetchAll();
+    }elseif(has_permission($id_user, 'view_post')){
+        $expired = false;
+        $personnel = get_personnel_to_user($id_user);
+        $sql = "SELECT 
+        id_a, activite.description, 
+            DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
+            DATE_FORMAT(activite.date_f, '%d %b %Y') AS date_f, 
+            personnel.nom_p, 
+            personnel.mail
+        FROM 
+            activite
+        INNER JOIN 
+            personnel ON personnel.id_p = activite.id_resp
+        WHERE 
+            activite.date_d <= CURDATE() 
+            AND activite.date_f >= CURDATE() 
+            AND expired = ? AND personnel.id_p = ?
+        ORDER BY 
+            activite.date_f;";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired, $personnel['id_p']));
+    
+        return $req->fetchAll();
+    }
 }
 
-function get_tache_fini(){
-    $expired = false;
-    $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
-    INNER JOIN personnel ON personnel.id_p = activite.id_resp 
-    WHERE activite.date_f < CURDATE() AND expired = ? ORDER BY activite.date_f DESC ";
+function get_tache_a_faire($id_user){
+    if(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'delete_post') && has_permission($id_user, 'view_post')){
+        $expired = false;
+        $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite
+        INNER JOIN personnel ON personnel.id_p = activite.id_resp
+        WHERE activite.date_d > CURDATE() AND expired = ? ORDER BY activite.date_d ";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired));
+    
+        return $req->fetchAll();
+    }elseif(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'view_post')){
+        $expired = false;
+        $personnel = get_personnel_to_user($id_user);
+        $service = get_service($personnel['id_p']);
+        $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite
+        INNER JOIN personnel ON personnel.id_p = activite.id_resp
+        WHERE activite.date_d > CURDATE() AND expired = ? AND personnel.service = ? ORDER BY activite.date_d ";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired, $service['service']));
+    
+        return $req->fetchAll();
 
-    $req = $GLOBALS['connexion']->prepare($sql);
+    }elseif(has_permission($id_user, 'view_post')){
+        $expired = false;
+        $personnel = get_personnel_to_user($id_user);
+        $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite
+        INNER JOIN personnel ON personnel.id_p = activite.id_resp
+        WHERE activite.date_d > CURDATE() AND expired = ? AND personnel.id_p = ? ORDER BY activite.date_d ";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired, $personnel['id_p']));
+    
+        return $req->fetchAll();
 
-    $req->execute(array($expired));
-
-    return $req->fetchAll();
+    }
 }
-function get_tache_expired(){
-    $expired = true;
-    $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
-    INNER JOIN personnel ON personnel.id_p = activite.id_resp 
-    WHERE activite.date_f < CURDATE() AND expired = ? ORDER BY activite.date_f DESC ";
 
-    $req = $GLOBALS['connexion']->prepare($sql);
+function get_tache_fini($id_user){
+    if(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'delete_post') && has_permission($id_user, 'view_post')){
+        $expired = false;
+        $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
+        INNER JOIN personnel ON personnel.id_p = activite.id_resp 
+        WHERE activite.date_f < CURDATE() AND expired = ? ORDER BY activite.date_f DESC ";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired));
+    
+        return $req->fetchAll();
+    }elseif(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'view_post')){
+        $expired = false;
+        $personnel = get_personnel_to_user($id_user);
+        $service = get_service($personnel['id_p']);
+        $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
+        INNER JOIN personnel ON personnel.id_p = activite.id_resp 
+        WHERE activite.date_f < CURDATE() AND expired = ? AND personnel.service = ?  ORDER BY activite.date_f DESC ";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired, $service['service']));
+    
+        return $req->fetchAll();
 
-    $req->execute(array($expired));
+    }elseif(has_permission($id_user, 'view_post')){
+        $expired = false;
+        $personnel = get_personnel_to_user($id_user);
+        $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
+        INNER JOIN personnel ON personnel.id_p = activite.id_resp 
+        WHERE activite.date_f < CURDATE() AND expired = ? AND personnel.id_p = ?  ORDER BY activite.date_f DESC ";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired, $personnel['id_p']));
+    
+        return $req->fetchAll();
 
-    return $req->fetchAll();
+    }
+}
+function get_tache_expired($id_user){
+    if(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'delete_post') && has_permission($id_user, 'view_post')){
+        $expired = true;
+        $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
+        INNER JOIN personnel ON personnel.id_p = activite.id_resp 
+        WHERE activite.date_f < CURDATE() AND expired = ? ORDER BY activite.date_f DESC ";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired));
+    
+        return $req->fetchAll();
+    }elseif(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'view_post')){
+        $expired = true;
+        $personnel = get_personnel_to_user($id_user);
+        $service = get_service($personnel['id_p']);
+        $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
+        INNER JOIN personnel ON personnel.id_p = activite.id_resp 
+        WHERE activite.date_f < CURDATE() AND expired = ? AND personnel.service = ? ORDER BY activite.date_f DESC ";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired, $service['service']));
+    
+        return $req->fetchAll();
+
+    }elseif(has_permission($id_user, 'view_post')){
+        $expired = true;
+        $personnel = get_personnel_to_user($id_user);
+        $sql = "SELECT id_a, DATE_FORMAT(activite.date_d,'%d %b %Y') AS date_d, DATE_FORMAT(activite.date_f,'%d %b %Y') AS date_f, personnel.nom_p, activite.description FROM activite 
+        INNER JOIN personnel ON personnel.id_p = activite.id_resp 
+        WHERE activite.date_f < CURDATE() AND expired = ? AND personnel.id_p = ? ORDER BY activite.date_f DESC ";
+    
+        $req = $GLOBALS['connexion']->prepare($sql);
+    
+        $req->execute(array($expired, $personnel['id_p']));
+    
+        return $req->fetchAll();
+
+    }
 }
 
 function get_activite($id = null){
@@ -125,7 +280,7 @@ function get_activite($id = null){
   
         return $req->fetch(PDO::FETCH_ASSOC);
       } else {
-          $sql = "SELECT activite.id_a,activite.description,activite.date_d, activite.date_f,personnel.nom_p FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp";
+          $sql = "SELECT activite.id_a,activite.description,activite.date_d, activite.date_f,personnel.nom_p, expired FROM activite INNER JOIN personnel ON personnel.id_p = activite.id_resp";
   
           $req = $GLOBALS['connexion']->prepare($sql);
   
@@ -268,6 +423,14 @@ function get_utilisateur($id=null){
           $req->execute(array($id));
   
           return $req->fetch(PDO::FETCH_ASSOC);
+      }else{
+        $sql = "SELECT id_l, nom_utilisateur, role_utilisateur.id_role, role.nom_r FROM login  INNER JOIN role_utilisateur ON role_utilisateur.id_utilisateur = login.id_l INNER JOIN role ON role.id_r = role_utilisateur.id_role";
+  
+          $req = $GLOBALS['connexion']->prepare($sql);
+  
+          $req->execute();
+  
+          return $req->fetchAll();
       }
 }
 

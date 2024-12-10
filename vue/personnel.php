@@ -5,7 +5,8 @@ include_once 'header.php';
 if(has_permission($_SESSION['utilisateur'], 'create_post') && has_permission($_SESSION['utilisateur'], 'edit_post') && has_permission($_SESSION['utilisateur'], 'delete_post') && has_permission($_SESSION['utilisateur'], 'view_post')){
       $personnel = get_personnel();
 }else{
-      $info_personnel = get_personnel($_SESSION['utilisateur']);
+      $personnel = get_personnel_to_user($_SESSION['utilisateur']);
+      $info_personnel = get_personnel($personnel['id_p']);
       $personnel = get_personnel_on_service($info_personnel['service']);
 }
 $service = get_service();
@@ -18,8 +19,13 @@ $service = get_service();
             <form action="../model/ajout_personnel.php" class="form-groupe" method="post">
                   <label for="nom" class="form-label">Nom</label>
                   <input type="text" id="nom" name="nom_p" class="form-control" placeholder="Entrer le nom">
+                  <label for="mail" class="form-label">Adresse mail</label>
+                  <input type="email" id="mail" name="mail" class="form-control" placeholder="Entrer l'adresse mail">
                   <label for="service" class="form-label">service</label>
                   <select name="service" id="service" class="form-control">
+                        <option value="">Sélectionné un service
+                        </option>
+
                         <?php
                               if (!empty($service) && is_array($service)):
                                     foreach ($service as $key => $value):

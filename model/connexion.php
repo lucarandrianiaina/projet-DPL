@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();  // Démarrer la session seulement si elle n'est pas déjà active
+}
 
 $nom_serveur = "localhost";
 $nom_base_de_donne = "dpl";
