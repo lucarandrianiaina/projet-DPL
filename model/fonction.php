@@ -66,9 +66,8 @@ function get_personnel_to_user($id_user){
 
 
 
-function get_tache_en_cours($id_user){
-    if(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'delete_post') && has_permission($id_user, 'view_post')){
-        $expired = false;
+function get_tache_en_cours($id_user=null){
+    if(empty($id_user)){
         $sql = "SELECT 
         id_a, activite.description, 
             DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
@@ -81,67 +80,92 @@ function get_tache_en_cours($id_user){
             personnel ON personnel.id_p = activite.id_resp
         WHERE 
             activite.date_d <= CURDATE() 
-            AND activite.date_f >= CURDATE() 
-            AND expired = ?
+            AND activite.date_f >= CURDATE()
         ORDER BY 
             activite.date_f;";
     
         $req = $GLOBALS['connexion']->prepare($sql);
     
-        $req->execute(array($expired));
+        $req->execute();
     
-        return $req->fetchAll();
-    }elseif(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'view_post')){
-        $expired = false;
-        $personnel = get_personnel_to_user($id_user);
-        $service = get_service($personnel['id_p']);
-        $sql = "SELECT 
-        id_a, activite.description, 
-            DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
-            DATE_FORMAT(activite.date_f, '%d %b %Y') AS date_f, 
-            personnel.nom_p, 
-            personnel.mail
-        FROM 
-            activite
-        INNER JOIN 
-            personnel ON personnel.id_p = activite.id_resp
-        WHERE 
-            activite.date_d <= CURDATE() 
-            AND activite.date_f >= CURDATE() 
-            AND expired = ? AND personnel.service = ?
-        ORDER BY 
-            activite.date_f;";
-    
-        $req = $GLOBALS['connexion']->prepare($sql);
-    
-        $req->execute(array($expired, $service['service']));
-    
-        return $req->fetchAll();
-    }elseif(has_permission($id_user, 'view_post')){
-        $expired = false;
-        $personnel = get_personnel_to_user($id_user);
-        $sql = "SELECT 
-        id_a, activite.description, 
-            DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
-            DATE_FORMAT(activite.date_f, '%d %b %Y') AS date_f, 
-            personnel.nom_p, 
-            personnel.mail
-        FROM 
-            activite
-        INNER JOIN 
-            personnel ON personnel.id_p = activite.id_resp
-        WHERE 
-            activite.date_d <= CURDATE() 
-            AND activite.date_f >= CURDATE() 
-            AND expired = ? AND personnel.id_p = ?
-        ORDER BY 
-            activite.date_f;";
-    
-        $req = $GLOBALS['connexion']->prepare($sql);
-    
-        $req->execute(array($expired, $personnel['id_p']));
-    
-        return $req->fetchAll();
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }else{
+        if(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'delete_post') && has_permission($id_user, 'view_post')){
+            $expired = false;
+            $sql = "SELECT 
+            id_a, activite.description, 
+                DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
+                DATE_FORMAT(activite.date_f, '%d %b %Y') AS date_f, 
+                personnel.nom_p, 
+                personnel.mail
+            FROM 
+                activite
+            INNER JOIN 
+                personnel ON personnel.id_p = activite.id_resp
+            WHERE 
+                activite.date_d <= CURDATE() 
+                AND activite.date_f >= CURDATE() 
+                AND expired = ?
+            ORDER BY 
+                activite.date_f;";
+        
+            $req = $GLOBALS['connexion']->prepare($sql);
+        
+            $req->execute(array($expired));
+        
+            return $req->fetchAll();
+        }elseif(has_permission($id_user, 'create_post') && has_permission($id_user, 'edit_post') && has_permission($id_user, 'view_post')){
+            $expired = false;
+            $personnel = get_personnel_to_user($id_user);
+            $service = get_service($personnel['id_p']);
+            $sql = "SELECT 
+            id_a, activite.description, 
+                DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
+                DATE_FORMAT(activite.date_f, '%d %b %Y') AS date_f, 
+                personnel.nom_p, 
+                personnel.mail
+            FROM 
+                activite
+            INNER JOIN 
+                personnel ON personnel.id_p = activite.id_resp
+            WHERE 
+                activite.date_d <= CURDATE() 
+                AND activite.date_f >= CURDATE() 
+                AND expired = ? AND personnel.service = ?
+            ORDER BY 
+                activite.date_f;";
+        
+            $req = $GLOBALS['connexion']->prepare($sql);
+        
+            $req->execute(array($expired, $service['service']));
+        
+            return $req->fetchAll();
+        }elseif(has_permission($id_user, 'view_post')){
+            $expired = false;
+            $personnel = get_personnel_to_user($id_user);
+            $sql = "SELECT 
+            id_a, activite.description, 
+                DATE_FORMAT(activite.date_d, '%d %b %Y') AS date_d, 
+                DATE_FORMAT(activite.date_f, '%d %b %Y') AS date_f, 
+                personnel.nom_p, 
+                personnel.mail
+            FROM 
+                activite
+            INNER JOIN 
+                personnel ON personnel.id_p = activite.id_resp
+            WHERE 
+                activite.date_d <= CURDATE() 
+                AND activite.date_f >= CURDATE() 
+                AND expired = ? AND personnel.id_p = ?
+            ORDER BY 
+                activite.date_f;";
+        
+            $req = $GLOBALS['connexion']->prepare($sql);
+        
+            $req->execute(array($expired, $personnel['id_p']));
+        
+            return $req->fetchAll();
+        }
     }
 }
 
@@ -569,7 +593,7 @@ function get_statut($date_d, $date_f, $expired) {
             $mail->SMTPAuth = false; ;                           //pas d'autentification
 
             //Recipients
-            $mail->setFrom('dpl@gmail.com', 'notification activité');
+            $mail->setFrom('dpl@gmail.com', 'notification DPL');
             $mail->addAddress($destinataire);     //Add a recipient
 
             //Content

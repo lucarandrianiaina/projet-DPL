@@ -8,7 +8,6 @@ include_once '../model/fonction.php';
 
 // envoi mail des activité en cours
 $activite = get_tache_en_cours();
-
 // var_dump($activite);
 $compte = 0;
 foreach($activite as $value){
@@ -35,7 +34,7 @@ foreach($activite as $value){
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,17 +44,5 @@ foreach($activite as $value){
     <h4>
         <?=$compte==0 ? 'pas de message envoyer' : $compte.' message envoyer'?>
     </h4>
-    <?php
-    // Définir la locale française
-    setlocale(LC_TIME, 'fr_FR');
-
-    // Date à convertir (exemple au format anglais)
-    $date_en = '2023-04-05';
-
-    // Convertir en format français
-    $date_fr = strftime('%d %M %Y', strtotime($date_en));
-
-    echo $date_fr;
-    ?>
 </body>
 </html>
