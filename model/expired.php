@@ -11,7 +11,7 @@ if(has_permission($_SESSION['utilisateur'], 'edit_post')){
       $sql = "UPDATE activite SET expired = ? WHERE id_a = ?";
       $req = $connexion->prepare($sql);
                         
-      $req->execute(array($expired,$id));     
+      $req->execute(array($expired,$id));   
                     
             
 }else{

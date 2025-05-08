@@ -2,6 +2,10 @@
 $title_head ='LES ACTIVITÉS';
 include_once 'header.php'; 
 $activite = get_activite();
+$personnel = get_personnel_to_user($_SESSION['utilisateur']);
+
+$activite_non_valide = count_activite_non_valide($personnel['id_p']);
+$compte = $activite_non_valide['compte'];
 ?>
 
 <div class="d-flex align-items-center w-45 my-3 ">
@@ -56,6 +60,10 @@ $activite = get_activite();
                   </div>
             </div>
       </div>
+      <div class="w-100 text-right">
+            <a href="valide_activite.php" class="btn btn-link">validé un activité <sup><div class="badge badge-secondary p-1"><?=$compte?></div></sub></a>
+            <a href="calendar.php" class="btn btn-link">calendrier d'activié</a>
+      </div>
 </div>
 <?php if (!empty($_SESSION['message']['text'])):?>
       <div class="alert alert-<?= $_SESSION['message']['type'] ?>">
@@ -66,7 +74,34 @@ $activite = get_activite();
       </div>
 <?php endif; ?>
 
-<table class="table table-hover" id="table-activite">
+<!-- Bouton pour afficher la recherche -->
+<button class="btn btn-outline-info mb-2 float-right" id="toggle-date-filter">
+    <i class="fas fa-filter"></i>
+</button>
+
+<!-- Zone de filtre par dates (cachée au départ) -->
+<div class="date-filter mb-3 d-none" id="date-filter">
+    <form class="form-inline flex-wrap align-items-end">
+        <div class="form-group mb-2 mx-2">
+            <label for="start-date" class="mr-2">Date de début</label>
+            <input type="date" id="start-date" class="form-control">
+        </div>
+
+        <div class="form-group mb-2 mx-2">
+            <label for="end-date" class="mr-2">Date de fin</label>
+            <input type="date" id="end-date" class="form-control">
+        </div>
+
+        <div class="form-group mb-2 mx-2">
+            <button type="button" id="filter-dates" class="btn btn-primary">
+                <i class="fas fa-search mr-1"></i> Filtrer
+            </button>
+        </div>
+    </form>
+</div>
+
+
+<table class="table table-hover" id="mytable">
     <thead>
       <tr>
             <th>Description</th>
@@ -116,12 +151,7 @@ $activite = get_activite();
           ?>
         </tbody>    
 </table>
-<div class="float-rigth">
-    <a href="../model/imprime_activite.php?all=true" class="btn btn-secondary mx-2">
-            <i class="fas fa-print"></i>Imprimer tous les activité
-        </a>
-</div>
       
 <?php
-include_once 'footer.php'
+include_once 'footer.php';
 ?>

@@ -1,12 +1,6 @@
 <?php
 include_once '../model/fonction.php';
 
-
-// $destinataire = 'test@gmail.com';
-// $message=['head'=>'en tete','body'=>'corps' ,'alt_body'=>'pied'];
-// send_mail($destinataire, $message);
-
-// envoi mail des activité en cours
 $activite = get_tache_en_cours();
 // var_dump($activite);
 $compte = 0;

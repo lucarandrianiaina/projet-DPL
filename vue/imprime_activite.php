@@ -3,6 +3,14 @@ $title_head = 'RAPPORT D\'ACTIVITÉ';
 include_once 'header.php';
 $activite = get_activite();
 ?>
+<?php if (!empty($_SESSION['message']['text'])):?>
+      <div class="alert alert-<?= $_SESSION['message']['type'] ?>">
+            <?= $_SESSION['message']['text'] ?>
+            <?php
+                  unset($_SESSION['message']);
+            ?>
+      </div>
+<?php endif; ?>
 
 <p>Choisissez une option :</p>
 <div class="container">

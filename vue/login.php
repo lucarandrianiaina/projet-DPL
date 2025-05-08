@@ -3,180 +3,197 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../public/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <title>Login</title>
     <style>
         * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Roboto', sans-serif; /* Police moderne */
-}
+            margin: 0;
+            padding: 0;
+            font-family: Century Gothic;
+        }
 
-body {
-    background-color: #6ca3aa;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        body {
+            background-image: url(../public/images/Background.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.container {
-    background-color: #409aa5;
-    width: 400px;
-    height: auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+        a {
+            font-size: small;
+            text-decoration: none;
+            color: #fff;
+            margin-bottom: 2px;
+        }
 
-.icon {
-    background-color: #00264d;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    position: relative;
-    top: -50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        a:hover {
+            transform: scale(1.05);
+            color: brown;
+        }
 
-.img-logo {
-    position: relative;
-    top: -40px;
-    width: 180px;
-    height: 50px;
-}
+        .container {
+            background-color: #409aa5;
+            width: 400px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.4);
+        }
 
-.form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
+        .icon {
+            background-color: #00264d;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: relative;
+            top: -75px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.form-group {
-    margin-bottom: 20px;
-    display: flex; /* Utiliser flexbox pour aligner les icônes et les champs sur la même ligne */
-    align-items: center; /* Centrer verticalement les éléments */
-    width: 80%;
-}
+        .img-logo {
+            position: relative;
+            top: -80px;
+            width: 200px;
+            height: 50px;
+        }
 
-.form-group label {
-    color: #fff;
-    font-size: 16px;
-    margin-right: 10px; /* Ajouter un espace entre l'icône et le champ */
-}
+        .form {
+            position: relative;
+            top: -60px;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-.form-group input {
-    color: #fff;
-    font-size: 15pt;
-    border: none;
-    background-color: transparent;
-    width: 100%;
-    padding: 12px;
-    transition: all 0.3s ease;
-}
+        .form-group {
+            margin-bottom: 15px;
+            border-bottom: 2px solid #fff;
+            margin-left: 40px;
+            margin-right: 40px;
+        }
 
-.form-group input:focus {
-    outline: none;
-    border-bottom: 2px solid #fff;
-}
+        .form-group input {
+            color: #fff;
+            font-size: 15pt;
+            border: none;
+            background-color: transparent;
+        }
 
-.form-group i {
-    color: #fff;
-    font-size: 20px;
-    margin-right: 10px; /* Espacement entre l'icône et le champ */
-}
+        .btn {
+            width: 100%;
+            background: linear-gradient(90deg, #58578499, #211a37, #8b0fc4);
+            color: white;
+            font-size: 16px;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            background-size: 300% 300%;
+            animation: gradientAnimation 5s ease infinite;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
 
-.btn {
-    background-color: #00264d;
-    color: #fff;
-    font-size: 14pt;
-    padding: 14px 20px;
-    width: 100%;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
 
-.btn:hover {
-    background-color: #003366;
-}
+            50% {
+                background-position: 100% 50%;
+            }
 
-.alert {
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    width: 100%;
-}
+            100% {
+                background-position: 0% 50%;
+            }
+        }
 
-.alert-danger {
-    color: #a94442;
-    background-color: #f2dede;
-    border-color: #ebccd1;
-}
+        .btn:hover {
+            transform: scale(1.05);
+        }
 
-@media (max-width: 480px) {
-    .container {
-        width: 90%;
-        padding: 15px;
-    }
-    .icon {
-        width: 80px;
-        height: 80px;
-        top: -40px;
-    }
-    .img-logo {
-        width: 150px;
-    }
-    .form-group input {
-        font-size: 14pt;
-    }
-    .btn {
-        font-size: 12pt;
-        padding: 12px;
-    }
-}
+        .form-group input:focus {
+            outline: none;
+        }
 
+        i {
+            margin-right: 5px;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .icon-label {
+            animation: bounce 1.5s infinite;
+        }
+
+        /* Animation pour les icônes */
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
-            <div class="icon">
-                <i class="fas fa-user fa-5x"></i>
+        <i class="far fa-user-circle icon fa-10x"></i>
+        <img src="../public/images/Logo.png" alt="logo E-gestion" class="img-logo">
+        <form action="../model/login.php" method="post" class="form">
+            <div class="form-group">
+                <label for="name" class="icon-label"><i class="fas fa-user fa-2x"></i></label>
+                <input type="text" class="text-box" name="nom_u" id="name" placeholder="Nom d'utilisateur">
             </div>
-            <img src="../public/images/Logo.png" alt="logo E-gestion" class="img-logo">
-            <form action="../model/login.php" method="post" class="form">
-                <div class="form-group">
-                    <label for="name"><i class="fas fa-user fa-2x"></i></label>
-                    <input type="text" class="text-box" name="nom_u" id="name" placeholder="Nom d'utilisateur">
-                </div>
-                <div class="form-group">
-                    <label for="mdp"><i class="fas fa-lock fa-2x"></i></label>
-                    <input type="password" class="text-box" name="mdp" id="mdp" placeholder="Mot de passe">
-                </div>
-                <?php if (!empty($_SESSION['message']['text'])):?>
-                    <div class="alert alert-<?= $_SESSION['message']['type'] ?>">
-                        <?= $_SESSION['message']['text'] ?>
-                        <?php
-                            unset($_SESSION['message']);
-                            ?>
-                    </div>
-                    <?php endif; ?>
-                    <input type="submit" value="LOGIN" class="btn" name="connexion">
-                </form>
-                <a href="mdp_oublie.php">Mot de passe oublié</a>
+            <div class="form-group">
+                <label for="mdp" class="icon-label"><i class="fas fa-lock fa-2x"></i></label>
+                <input type="password" class="text-box" name="mdp" id="mdp" placeholder="Mot de passe">
+                <i class="fas fa-eye eye-icon m-0 p-0" id="togglePassword"></i>
+            </div>
+            <input type="submit" value="LOGIN" class="btn" name="connexion">
+        </form>
+        <a href="mdp_oublie.php">Mot de passe oublié</a>
+        <a href="creat_compte.php">créer mon compte</a>
+        <!-- Affichage des messages d'alerte -->
+        <?php if (!empty($_SESSION['message']['text'])): ?>
+            <div class="alert alert-<?= $_SESSION['message']['type'] ?> alert-dismissible fade show" role="alert">
+                <?= $_SESSION['message']['text'] ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['message']); // Supprimer le message après l'affichage 
+            ?>
+
+        <?php endif; ?>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('mdp');
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = type;
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+
 </body>
+
 </html>

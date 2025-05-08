@@ -1,135 +1,108 @@
 <?php
 $title_head = 'TABLEAU DE BORD';
 include_once 'header.php';
+$personnel = get_personnel_to_user($_SESSION['utilisateur']);
+$id_p = $personnel['id_p'];
 
-// Vérification de l'existence de 'act' dans $_GET
-$act = isset($_GET['act']) ? $_GET['act'] : 'FN';
+$expired = count_activite_expire($id_p);
+
+$termine = count_activite_termine($id_p);
+
+$en_cours = count_activite_en_cours($id_p);
+
+$realise = count_activite_a_faire($id_p)
 ?>
-
-<div class="row my-2">
-    <div class="col-md-6 col-lg-3">
-        <a href="index.php?act=AF" class="btn btn-outline-primary <?= $act == 'AF' ? 'active' : '' ?>"><i class="fas fa-hourglass-half"></i> À réaliser</a>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <a href="index.php?act=EC" class="btn btn-outline-primary <?= $act == 'EC' ? 'active' : '' ?>"><i class="fas fa-clock"></i> En cours</a>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <a href="index.php?act=FN" class="btn btn-outline-primary <?= $act == 'FN' ? 'active' : '' ?>"><i class="fas fa-arrow-right"></i> Términé</a>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <a href="index.php?act=EX" class="btn btn-outline-primary <?= $act == 'EX' ? 'active' : '' ?>"><i class="fas fa-box"></i> Expirés</a>
-    </div>
-</div>
-
-<?php
-// Section "À faire"
-if ($act == 'AF'):
-?>
-<div class="row">
-      <?php
-      $a_faire = get_tache_a_faire($_SESSION['utilisateur']);
-      if (!empty($a_faire) && is_array($a_faire)):
-      foreach ($a_faire as $value):
-            $date_d = new DateTime($value['date_d']);
-            $date_sys = new DateTime(date('Y-m-d'));
-            $reste = $date_sys->diff($date_d);
-      ?>
-      <div class="col-md-4">
-            <div class="card mb-4">
-                  <div class="card-body">
-                        <span class="badge badge-secondary" style="float:right;">j-<?= $reste->days ?></span>
-                        <h5 class="card-title"><?= $value['description'] ?></h5>
-                        <p class="card-text">Du <?= $value['date_d'] ?> au <?= $value['date_f'] ?></p>
-                        <p class="card-text">Résponsable: <b><?= $value['nom_p'] ?></b></p>
-                        
-                  </div>
+  <!-- Content Row -->
+  <h5>Activités sous votre résponsabilité</h5>
+  <div class="row">
+    <!-- À réaliser Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                À réaliser
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                <?= $realise['realise']; ?> <!-- Afficher le nombre d'activités à réaliser -->
+              </div>
             </div>
+            <div class="col-auto">
+              <i class="fas fa-clipboard-list fa-2x text-gray-300"></i> <!-- Icône représentant le temps restant -->
+            </div>
+          </div>
+        </div>
       </div>
-      <?php endforeach; endif; ?>
-</div>
+    </div>
 
-<?php
-// Section "En cours"
-elseif ($act == 'EC'):
-?>
-<div class="row">
-      <?php
-      $en_cours = get_tache_en_cours($_SESSION['utilisateur']);
-      if (!empty($en_cours) && is_array($en_cours)):
-      foreach ($en_cours as $value):
-            $date_f = new DateTime($value['date_f']);
-            $date_sys = new DateTime(date('Y-m-d'));
-            $reste = $date_sys->diff($date_f);
-      ?>
-      <div class="col-md-4">
-            <div class="card mb-4">
-                  <div class="card-body">
-                        <span class="badge badge-<?= $reste->days == 0 ? 'danger' : 'info' ?>" style="float:right;">
-                        <?= $reste->days == 0 ? 'dernier jour' : '-' . $reste->days . ' j' ?>
-                        </span>
-                        <h5 class="card-title"><?= $value['description'] ?></h5>
-                        <p class="card-text">Du <?= $value['date_d'] ?> au <?= $value['date_f'] ?></p>
-                        <p class="card-text">Résponsable: <b><?= $value['nom_p'] ?></b></p>
-                  </div>
+    <!-- En cours Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                En cours
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                <?= $en_cours['en_cours']; ?> <!-- Afficher le nombre d'activités en cours -->
+              </div>
             </div>
+            <div class="col-auto">
+              <i class="fas fa-sync-alt fa-2x text-gray-300"></i> <!-- Icône représentant le temps qui tourne -->
+            </div>
+          </div>
+        </div>
       </div>
-      <?php endforeach; endif; ?>
-</div>
+    </div>
 
-<?php
-// Section "Finies"
-elseif($act == 'FN'):
-?>
-<div class="row">
-      <?php
-      $fini = get_tache_fini($_SESSION['utilisateur']);
-      if (!empty($fini) && is_array($fini)):
-      foreach ($fini as $value):
-            $date_f = new DateTime($value['date_f']);
-            $date_sys = new DateTime(date('Y-m-d'));
-            $reste = $date_sys->diff($date_f);
-      ?>
-      <div class="col-md-4">
-            <div class="card mb-4">
-                  <div class="card-body">
-                        <span class="badge badge-<?= $reste->days == 1 ? 'danger' : 'secondary' ?>" style="float:right;">
-                              <?= $reste->days == 1 ? 'hier' : 'il y a ' . $reste->days . 'j' ?>
-                        </span>
-                        <h5 class="card-title"><?= $value['description'] ?></h5>
-                        <p class="card-text">Du <?= $value['date_d'] ?> au <?= $value['date_f'] ?></p>
-                        <p class="card-text">Résponsable: <b><?= $value['nom_p'] ?></b></p>
-                        <a href="../model/expired.php?id=<?=$value['id_a']?> " style="float: right;" class="btn btn-danger btn-sm"><i class="fas fa-box"></i></a>
+    <!-- Terminées Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                Términées
+              </div>
+              <div class="row no-gutters align-items-center">
+                <div class="col-auto">
+                  <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                    <?= $termine['termine']; ?> <!-- Afficher le nombre d'activités terminées -->
                   </div>
+                </div>
+              </div>
             </div>
-      </div>
-      <?php endforeach; endif; ?>
-</div>
-<?php
-else:
-?>
-<div class="row">
-      <?php
-      $fini = get_tache_expired($_SESSION['utilisateur']);
-      if (!empty($fini) && is_array($fini)):
-      foreach ($fini as $value):
-            $date_f = new DateTime($value['date_f']);
-            $date_sys = new DateTime(date('Y-m-d'));
-            $reste = $date_sys->diff($date_f);
-      ?>
-      <div class="col-md-4">
-            <div class="card mb-4">
-                  <div class="card-body">
-                        <span class="badge badge-<?= $reste->days == 1 ? 'danger' : 'secondary' ?>" style="float:right;">
-                              <?= $reste->days == 1 ? 'hier' : 'il y a ' . $reste->days . 'j' ?>
-                        </span>
-                        <h5 class="card-title"><?= $value['description'] ?></h5>
-                        <p class="card-text">Du <?= $value['date_d'] ?> au <?= $value['date_f'] ?></p>
-                        <p class="card-text">Résponsable: <b><?= $value['nom_p'] ?></b></p>
-                  </div>
+            <div class="col-auto">
+              <i class="fas fa-flag-checkered fa-2x text-gray-300"></i> <!-- Icône représentant la progression -->
             </div>
+          </div>
+        </div>
       </div>
-      <?php endforeach; endif; ?>
-</div>
-<?php endif; ?>
+    </div>
+
+    <!-- Expirés Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                Expirés
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                <?= $expired['nombre_activites']; ?> <!-- Afficher le nombre d'activités expirées -->
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-calendar-times fa-2x text-gray-300"></i> <!-- Icône représentant une boîte, symbolisant l'expiration -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 <?php include_once 'footer.php'; ?>

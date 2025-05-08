@@ -56,7 +56,7 @@ include_once 'header.php';
 
     <div class="col-sm-12 col-lg-8 border">
         <!-- Tableau des utilisateurs -->
-        <table class="table">
+        <table class="table table-hover" id="mytable">
             <thead>
                 <tr>
                     <th scope="col">Nom d'utilisateur</th>

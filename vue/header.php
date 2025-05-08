@@ -30,7 +30,7 @@ $user = get_utilisateur($_SESSION['utilisateur']);
       }
       ?>
     </title>
-
+      
     <!-- Custom fonts for this template-->
     <link href="../public/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
@@ -42,12 +42,23 @@ $user = get_utilisateur($_SESSION['utilisateur']);
 
      <!-- Custom styles for this page -->
 
-     <link href="../public/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-     <link href="../public/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="../public/vendor/DataTables/datatables.min.css">
     <style>
         .card {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
+        .footer {
+    font-size: 0.9rem;
+    background-color: #f8f9fc;
+}
+.footer a {
+    color: inherit;
+    text-decoration: none;
+}
+.footer a:hover {
+    text-decoration: underline;
+}
+
     </style>
 
 </head>
@@ -96,6 +107,16 @@ $user = get_utilisateur($_SESSION['utilisateur']);
                     <span>Activités</span></a>
             </li>
 
+            <?php if(has_permission($_SESSION['utilisateur'], 'create_post') && has_permission($_SESSION['utilisateur'], 'edit_post') && has_permission($_SESSION['utilisateur'], 'view_post')):?>
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="file.php">
+                        <i class="fas fa-file"></i>
+                        <span>Fichier</span></a>
+                </li>
+            <?php endif ?>
             <?php if(has_permission($_SESSION['utilisateur'], 'create_post') && has_permission($_SESSION['utilisateur'], 'edit_post') && has_permission($_SESSION['utilisateur'], 'delete_post') && has_permission($_SESSION['utilisateur'], 'view_post')):?>
                 <!-- Divider -->
                 <hr class="sidebar-divider">
@@ -104,6 +125,11 @@ $user = get_utilisateur($_SESSION['utilisateur']);
                     <a class="nav-link" href="utilisateur.php">
                         <i class="fas fa-user-cog"></i>
                         <span>Gérer les utilisateur</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="confirme_utilisateur.php">
+                        <i class="fas fa-user"></i>
+                        <span>confirmer utilisateur</span></a>
                 </li>
             <?php endif ?>
             <!-- Heading -->
