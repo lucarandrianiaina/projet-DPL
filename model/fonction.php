@@ -707,15 +707,6 @@ function count_activite_non_valide($id_p) {
     return $req->fetch(PDO::FETCH_ASSOC);
 }
 
-
-
-
-
-
-
-
-
-
 function send_mail($destinataire, $message = ['head' => '', 'body' => '', 'alt_body' => ''])
 {
     //Import PHPMailer classes into the global namespace
